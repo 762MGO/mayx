@@ -1,1941 +1,1085 @@
 <!DOCTYPE html>
-
 <html lang="zh-CN">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-
 <title>排班助手 · 糖果色版</title>
-
 <style>
-
   :root {
-
-    --bg-gradient-start: #fff0f5;  /* 浅粉 */
-
-    --bg-gradient-end: #e0f7fa;    /* 浅蓝 */
-
+    --bg-gradient-start: #fff0f5;
+    --bg-gradient-end: #e0f7fa;
     --card-bg: rgba(255, 255, 255, 0.85);
-
     --card-shadow: 0 8px 20px rgba(0,0,0,0.05);
-
-    --primary: #ff8c8c;            /* 珊瑚粉主色 */
-
+    --primary: #ff8c8c;
     --primary-dark: #e06c6c;
-
     --text: #4a4a4a;
-
     --text2: #6a6a6a;
-
     --text3: #8a8a8a;
-
     --border: rgba(0,0,0,0.08);
-
     --red: #f26b6b;
-
     --green: #5cb85c;
-
     --blue: #5bc0de;
-
     --orange: #f0ad4e;
-
     --purple: #c06df2;
-
     --safe-bottom: env(safe-area-inset-bottom, 8px);
-
   }
-
   * {
-
     margin: 0;
-
     padding: 0;
-
     box-sizing: border-box;
-
     -webkit-tap-highlight-color: transparent;
-
   }
-
   body {
-
     background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
-
     display: flex;
-
     justify-content: center;
-
     align-items: center;
-
     min-height: 100dvh;
-
     font-family: -apple-system, "SF Pro Text", "PingFang SC", Helvetica, sans-serif;
-
   }
-
   .app {
-
     width: 100%;
-
     max-width: 430px;
-
     height: 100dvh;
-
     background: transparent;
-
     display: flex;
-
     flex-direction: column;
-
     position: relative;
-
   }
-
   .main {
-
     flex: 1;
-
     overflow-y: auto;
-
     padding: 12px 16px 20px;
-
     scroll-behavior: smooth;
-
   }
-
   .card {
-
     background: var(--card-bg);
-
     backdrop-filter: blur(10px);
-
     border-radius: 28px;
-
     padding: 18px 20px;
-
     margin-bottom: 14px;
-
     box-shadow: var(--card-shadow);
-
     border: 1px solid rgba(255,255,255,0.6);
-
   }
-
   .card-title {
-
     font-size: 16px;
-
     font-weight: 700;
-
     color: var(--primary-dark);
-
     margin-bottom: 12px;
-
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
   }
-
   .btn {
-
     display: inline-flex;
-
     align-items: center;
-
     justify-content: center;
-
     gap: 6px;
-
     background: var(--primary);
-
     color: white;
-
     border: none;
-
     border-radius: 40px;
-
     padding: 8px 18px;
-
     font-size: 13px;
-
     font-weight: 600;
-
     cursor: pointer;
-
     transition: 0.1s ease;
-
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-
   }
-
   .btn:active { transform: scale(0.96); background: var(--primary-dark); }
-
   .btn-small { padding: 5px 14px; font-size: 12px; }
-
   .btn-outline {
-
     background: transparent;
-
     border: 1px solid var(--primary);
-
     color: var(--primary-dark);
-
     box-shadow: none;
-
   }
-
   .btn-danger {
-
     background: rgba(242,107,107,0.15);
-
     color: var(--red);
-
     border: 1px solid rgba(242,107,107,0.3);
-
   }
-
   .input {
-
     width: 100%;
-
     padding: 10px 15px;
-
     border: 1px solid var(--border);
-
     border-radius: 24px;
-
     font-size: 14px;
-
     background: white;
-
     margin-bottom: 8px;
-
     outline: none;
-
   }
-
   .input:focus { border-color: var(--primary); }
-
   .flex-row {
-
     display: flex;
-
     gap: 10px;
-
     align-items: center;
-
     flex-wrap: wrap;
-
   }
-
   .badge {
-
     display: inline-block;
-
     padding: 4px 14px;
-
     border-radius: 30px;
-
     font-size: 12px;
-
     font-weight: 600;
-
     color: white;
-
   }
-
   .week-row {
-
     display: flex;
-
     gap: 8px;
-
     overflow-x: auto;
-
     padding-bottom: 10px;
-
   }
-
   .week-day {
-
     flex: 0 0 65px;
-
     text-align: center;
-
     background: white;
-
     border-radius: 20px;
-
     padding: 10px 0;
-
     border: 1px solid rgba(0,0,0,0.05);
-
     cursor: pointer;
-
     transition: 0.1s;
-
     box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-
   }
-
   .week-day.today { background: var(--primary); color: white; border-color: var(--primary); }
-
   .week-day.selected { background: var(--primary-dark); color: white; border-color: var(--primary-dark); }
-
   .shift-chip {
-
     display: inline-block;
-
     padding: 6px 16px;
-
     border-radius: 40px;
-
     background: white;
-
     border: 1px solid #ffe0e0;
-
     font-size: 12px;
-
     font-weight: 500;
-
     margin: 4px 6px 0 0;
-
     cursor: pointer;
-
     color: var(--text2);
-
     transition: 0.1s;
-
   }
-
   .shift-chip.active {
-
     background: var(--primary);
-
     color: white;
-
     border-color: var(--primary);
-
   }
-
   .tab-bar {
-
     display: flex;
-
     justify-content: space-around;
-
     background: rgba(255,255,255,0.8);
-
     backdrop-filter: blur(20px);
-
     border-top: 1px solid rgba(0,0,0,0.05);
-
     padding: 6px 12px calc(6px + var(--safe-bottom));
-
   }
-
   .tab-item {
-
-    padding: 8px 24px;
-
+    padding: 8px 18px;
     border-radius: 40px;
-
     font-size: 14px;
-
     font-weight: 600;
-
     color: var(--text3);
-
     cursor: pointer;
-
     transition: 0.1s;
-
   }
-
   .tab-item.active {
-
     background: var(--primary);
-
     color: white;
-
     box-shadow: 0 2px 8px rgba(255,140,140,0.3);
-
   }
-
   .page { display: none; }
-
   .page.active { display: block; }
-
   .countdown-num {
-
     font-size: 36px;
-
     font-family: monospace;
-
     font-weight: 700;
-
     letter-spacing: 2px;
-
     color: var(--primary-dark);
-
   }
-
   .reminder-text {
-
     font-size: 14px;
-
     line-height: 1.5;
-
     color: var(--text);
-
     background: rgba(255,255,255,0.5);
-
     padding: 10px;
-
     border-radius: 20px;
-
   }
-
   .note-item {
-
     display: flex;
-
     align-items: center;
-
     gap: 10px;
-
     padding: 10px 0;
-
     border-bottom: 1px solid rgba(0,0,0,0.05);
-
   }
-
   .finance-item {
-
     display: flex;
-
     justify-content: space-between;
-
     padding: 10px 0;
-
     border-bottom: 1px solid rgba(0,0,0,0.05);
-
     color: var(--text2);
-
   }
-
   .toast {
-
     position: fixed;
-
     bottom: 80px;
-
     left: 50%;
-
     transform: translateX(-50%);
-
     background: rgba(0,0,0,0.75);
-
     color: white;
-
     padding: 8px 20px;
-
     border-radius: 40px;
-
     font-size: 13px;
-
     z-index: 1000;
-
     pointer-events: none;
-
   }
-
   .calendar-cell {
-
     aspect-ratio: 1;
-
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
-
     justify-content: center;
-
     border-radius: 16px;
-
     background: white;
-
     border: 1px solid #ffe0e0;
-
     cursor: pointer;
-
     font-weight: 500;
-
     color: var(--text);
-
   }
-
   .calendar-cell.today {
-
     background: var(--primary);
-
     color: white;
-
   }
-
   .calendar-cell.selected {
-
     background: var(--primary-dark);
-
     color: white;
-
     border: 2px solid white;
-
   }
-
   .calendar-cell.other {
-
     opacity: 0.5;
-
   }
-
+  .stat-table {
+    width: 100%;
+    margin-top: 12px;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .stat-table th, .stat-table td {
+    padding: 8px 6px;
+    text-align: left;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+  .stat-table th {
+    color: var(--primary-dark);
+    font-weight: 600;
+  }
+  .stat-summary {
+    margin-top: 10px;
+    font-weight: 600;
+    color: var(--text2);
+  }
 </style>
-
 </head>
-
 <body>
-
 <div class="app">
-
   <div class="main" id="mainContent">
-
     <!-- 今日页面 -->
-
     <div class="page active" id="page-today">
-
       <div class="card" style="background: linear-gradient(135deg, #ffdde1, #ee9ca7); color: white; backdrop-filter: none;">
-
-        <div class="flex-row" style="justify-content: space-between;">
-
+        <div class="flex-row" style="justify-content: space-between; align-items: baseline;">
           <span class="badge" id="todayBadge" style="background: rgba(0,0,0,0.2);">休假</span>
-
           <span id="todayShiftTime" style="font-size: 22px; font-weight: 600;">休息日</span>
-
         </div>
-
-        <div class="countdown-num" id="countdownDisplay" style="margin-top: 12px;">🎉</div>
-
+        <div style="font-size: 18px; font-weight: 500; margin: 8px 0 4px;" id="realDateDisplay"></div>
+        <div class="countdown-num" id="countdownDisplay" style="margin-top: 8px;">🎉</div>
         <div id="countdownLabel" style="font-size: 13px; opacity: 0.9;">今日休假</div>
-
       </div>
-
       <div class="card">
-
         <div class="card-title">✨ 今日专属祝福 <button class="btn btn-small btn-outline" id="refreshReminderBtn">换一句</button></div>
-
         <div class="reminder-text" id="reminderText">加载中...</div>
-
         <div class="flex-row" style="margin-top: 12px;">
-
           <button class="btn btn-small btn-outline" id="copyReminderBtn">复制</button>
-
         </div>
-
       </div>
-
       <div class="card">
-
         <div class="card-title">📝 今日备注 <span id="todayNoteCount"></span></div>
-
         <div id="todayNotesList" style="max-height: 200px; overflow-y: auto;"></div>
-
         <div class="flex-row" style="margin-top: 12px;">
-
           <input type="text" class="input" id="todayNoteText" placeholder="写点啥..." style="flex:1; margin-bottom:0;">
-
           <button class="btn" id="addTodayNoteBtn">添加</button>
-
         </div>
-
       </div>
-
       <div class="card">
-
         <div class="card-title">💰 最近流水 <button class="btn btn-small btn-outline" id="gotoCalendarBtn">全部</button></div>
-
         <div id="recentFinance"></div>
-
         <div class="flex-row" style="margin-top: 12px;">
-
           <input type="number" class="input" id="quickAmount" placeholder="金额" style="flex:1;">
-
           <select class="input" id="quickType" style="width: 90px;">
-
             <option value="income">收入</option>
-
             <option value="expense">支出</option>
-
           </select>
-
           <button class="btn" id="quickFinanceBtn">记一笔</button>
-
         </div>
-
       </div>
-
     </div>
 
     <!-- 排班页面 -->
-
     <div class="page" id="page-week">
-
       <div class="card">
-
         <div class="card-title">📅 排班周视图
-
           <div class="flex-row">
-
             <button class="btn btn-small btn-outline" id="prevWeekBtn">‹</button>
-
             <span id="weekRange" style="font-size:13px;"></span>
-
             <button class="btn btn-small btn-outline" id="nextWeekBtn">›</button>
-
           </div>
-
         </div>
-
         <div class="week-row" id="weekRow"></div>
-
         <div style="margin: 14px 0 8px; font-weight: 600;">选择班次</div>
-
         <div id="shiftChips" class="flex-row" style="gap: 6px;"></div>
-
         <div style="margin-top: 12px; font-size:13px; color: var(--text3);" id="weekSelectedInfo"></div>
-
         <button class="btn" id="applyTemplateBtn" style="margin-top: 14px; width:100%;">快速应用本周模板</button>
-
       </div>
-
       <div class="card">
-
         <div class="card-title">📌 全部备注</div>
-
         <div id="notesList"></div>
-
         <div class="flex-row" style="margin-top: 12px;">
-
           <input type="date" id="noteDate" class="input" style="flex:1;">
-
           <input type="text" id="noteText" placeholder="备注内容" class="input" style="flex:2;">
-
           <button class="btn" id="addNoteBtn">添加</button>
-
         </div>
-
       </div>
-
     </div>
 
-    <!-- 日历统计页面 -->
-
+    <!-- 日历页面（仅保留日历和标记） -->
     <div class="page" id="page-calendar">
-
       <div class="card">
-
         <div class="card-title">
-
           <button class="btn btn-small btn-outline" id="prevMonthBtn">‹</button>
-
           <span id="calMonthLabel">2026年6月</span>
-
           <button class="btn btn-small btn-outline" id="nextMonthBtn">›</button>
-
         </div>
-
         <div id="calendarGrid" style="display: grid; grid-template-columns: repeat(7,1fr); gap: 6px; text-align: center;"></div>
-
         <div class="flex-row" style="justify-content: center; gap: 16px; margin-top: 14px;">
-
           <span><span style="background: var(--primary); display: inline-block; width: 10px; height: 10px; border-radius: 50%;"></span> 排班</span>
-
           <span><span style="background: var(--green); display: inline-block; width: 10px; height: 10px; border-radius: 50%;"></span> 收入</span>
-
           <span><span style="background: var(--red); display: inline-block; width: 10px; height: 10px; border-radius: 50%;"></span> 支出</span>
-
           <span><span style="background: var(--blue); display: inline-block; width: 10px; height: 10px; border-radius: 50%;"></span> 备注</span>
-
         </div>
-
       </div>
-
-      <div class="card">
-
-        <div class="card-title">📊 区间统计</div>
-
-        <div class="flex-row">
-
-          <input type="date" id="statsFrom" class="input" style="flex:1;">
-
-          <span>—</span>
-
-          <input type="date" id="statsTo" class="input" style="flex:1;">
-
-          <button class="btn" id="queryStatsBtn">查询</button>
-
-        </div>
-
-        <div class="flex-row" style="justify-content: space-between; margin: 14px 0;">
-
-          <div>收入: <strong id="statsIncome" style="color: var(--green);">¥0</strong></div>
-
-          <div>支出: <strong id="statsExpense" style="color: var(--red);">¥0</strong></div>
-
-          <div>结余: <strong id="statsBalance">¥0</strong></div>
-
-        </div>
-
-        <div id="statsList"></div>
-
-      </div>
-
     </div>
 
+    <!-- 新增统计页面：包含区间统计（收支） + 排班统计表 -->
+    <div class="page" id="page-stats">
+      <div class="card">
+        <div class="card-title">📊 区间统计</div>
+        <div class="flex-row">
+          <input type="date" id="statsFrom" class="input" style="flex:1;">
+          <span>—</span>
+          <input type="date" id="statsTo" class="input" style="flex:1;">
+          <button class="btn" id="queryStatsBtn">查询</button>
+        </div>
+        <div class="flex-row" style="justify-content: space-between; margin: 14px 0;">
+          <div>收入: <strong id="statsIncome" style="color: var(--green);">¥0</strong></div>
+          <div>支出: <strong id="statsExpense" style="color: var(--red);">¥0</strong></div>
+          <div>结余: <strong id="statsBalance">¥0</strong></div>
+        </div>
+        <div id="statsList"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 排班统计表</div>
+        <div class="flex-row">
+          <input type="date" id="shiftStatFrom" class="input" style="flex:1;">
+          <span>—</span>
+          <input type="date" id="shiftStatTo" class="input" style="flex:1;">
+          <button class="btn" id="queryShiftStatsBtn">查询</button>
+        </div>
+        <div id="shiftStatsResult" style="margin-top: 12px;">
+          <div class="stat-summary">请选择日期范围并点击查询</div>
+        </div>
+      </div>
+    </div>
   </div>
-
   <div class="tab-bar">
-
     <div class="tab-item active" data-tab="page-today">今日</div>
-
     <div class="tab-item" data-tab="page-week">排班</div>
-
     <div class="tab-item" data-tab="page-calendar">日历</div>
-
+    <div class="tab-item" data-tab="page-stats">统计</div>
   </div>
-
 </div>
-
 <div id="toastContainer"></div>
-
 <script>
-
 (function(){
-
   // ---------- 数据定义 ----------
-
   const STORAGE_KEY = 'schedule_pro_v3';
-
   const DEFAULT_SHIFTS = {
-
     'A2': { name:'A2', times:['8:00-11:00','12:00-16:00'], color:'#ff8c8c' },
-
     'B2': { name:'B2', times:['8:00-12:00','13:00-16:00'], color:'#5cb85c' },
-
     '治疗班': { name:'治疗班', times:['8:00-12:00','14:00-17:00'], color:'#c06df2' },
-
     'B1': { name:'B1', times:['8:00-12:00','14:30-17:30'], color:'#f0ad4e' },
-
     '夜班': { name:'夜班', times:['23:00-次日8:00'], color:'#5bc0de', overnight:true },
-
     '中班': { name:'中班', times:['17:00-23:00'], color:'#f26b6b' },
-
     '主班': { name:'主班', times:['14:00-17:00'], color:'#ffaa66' },
-
     '休假': { name:'休假', times:[], color:'#b0b0b0', isRest:true }
-
   };
-
   let shifts = JSON.parse(JSON.stringify(DEFAULT_SHIFTS));
-
   let schedule = {};
-
   let finance = [];
-
   let notes = [];
-
   let reminderLog = {};
-
   let customShifts = {};
 
   let curPage = 'page-today';
-
   let selDate = null;
-
   let selWeekDay = null;
-
   let weekOffset = 0;
-
   let calYear, calMonth;
 
   const fmtDate = (y,m,d) => `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-
   const todayStr = () => { const d=new Date(); return fmtDate(d.getFullYear(), d.getMonth(), d.getDate()); };
-
   const toast = (msg) => {
-
     let container = document.getElementById('toastContainer');
-
     let el = document.createElement('div');
-
     el.className = 'toast';
-
     el.innerText = msg;
-
     container.appendChild(el);
-
     setTimeout(() => el.remove(), 2000);
-
   };
-
   const save = () => {
-
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ shifts, schedule, finance, notes, reminderLog, customShifts, calYear, calMonth }));
-
   };
-
   const load = () => {
-
     try {
-
       const raw = localStorage.getItem(STORAGE_KEY);
-
       if (raw) {
-
         const data = JSON.parse(raw);
-
         if (data.shifts) shifts = data.shifts;
-
         if (data.schedule) schedule = data.schedule;
-
         if (data.finance) finance = data.finance;
-
         if (data.notes) notes = data.notes;
-
         if (data.reminderLog) reminderLog = data.reminderLog;
-
         if (data.customShifts) customShifts = data.customShifts;
-
         if (data.calYear !== undefined) calYear = data.calYear;
-
         if (data.calMonth !== undefined) calMonth = data.calMonth;
-
         Object.assign(shifts, customShifts);
-
       }
-
     } catch(e) {}
-
     if (calYear === undefined) { const d = new Date(); calYear = d.getFullYear(); calMonth = d.getMonth(); }
-
   };
-
   const getRanges = (key) => {
-
     const st = shifts[key];
-
     if (!st || !st.times.length) return [];
-
     const parse = (s) => {
-
       let next = false;
-
       let clean = s;
-
       if (s.includes('次日')) { next = true; clean = s.replace('次日',''); }
-
       let [h,m] = clean.split(':').map(Number);
-
       return { min: h*60 + (m||0), isNext: next };
-
     };
-
     return st.times.map(t => {
-
       let [s,e] = t.split('-');
-
       let start = parse(s.trim());
-
       let end = parse(e.trim());
-
       let startMin = start.min + (start.isNext ? 1440 : 0);
-
       let endMin = end.min + (end.isNext ? 1440 : 0);
-
       if (endMin < startMin) endMin += 1440;
-
       return { startMin, endMin, startStr: s.trim(), endStr: e.trim() };
-
     });
-
   };
 
+  // 今日页面UI更新
   function updateTodayUI() {
+    // 实时日期显示
+    const nowDate = new Date();
+    const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    const dateStr = `${nowDate.getFullYear()}年${nowDate.getMonth()+1}月${nowDate.getDate()}日 ${weekdays[nowDate.getDay()]}`;
+    document.getElementById('realDateDisplay').innerText = dateStr;
 
     const today = todayStr();
-
     const shiftKey = schedule[today] || '休假';
-
     const shift = shifts[shiftKey] || shifts['休假'];
-
     document.getElementById('todayBadge').innerText = shift.name;
-
     document.getElementById('todayBadge').style.background = shift.color;
-
     document.getElementById('todayShiftTime').innerText = shift.times.length ? shift.times.join(' | ') : '休息日';
-
     const now = new Date();
-
     const curMin = now.getHours()*60 + now.getMinutes();
-
     const ranges = getRanges(shiftKey);
-
     const countdownNum = document.getElementById('countdownDisplay');
-
     const countdownLabel = document.getElementById('countdownLabel');
-
     if (!ranges.length || shift.isRest) {
-
       countdownNum.innerText = '🎉';
-
       countdownLabel.innerText = '今日休假';
-
     } else {
-
       let inWork = false;
-
       let nextTarget = null;
-
       let isEnd = false;
-
       for (let r of ranges) {
-
         if (curMin >= r.startMin && curMin < r.endMin) {
-
           inWork = true;
-
           nextTarget = r.endMin;
-
           break;
-
         }
-
       }
-
       if (!inWork) {
-
         let earliest = null;
-
         for (let r of ranges) {
-
           if (curMin < r.startMin) {
-
             if (earliest === null || r.startMin < earliest) earliest = r.startMin;
-
           }
-
         }
-
         if (earliest !== null) nextTarget = earliest;
-
         else isEnd = true;
-
       }
-
       if (isEnd) {
-
         countdownNum.innerText = '✅';
-
         countdownLabel.innerText = '今日已完成';
-
       } else if (nextTarget) {
-
         let diff = nextTarget - curMin;
-
         if (diff < 0) diff += 1440;
-
         const h = Math.floor(diff/60);
-
         const m = diff%60;
-
         const s = 59 - now.getSeconds();
-
         countdownNum.innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-
         countdownLabel.innerText = inWork ? '下班倒计时' : '上班倒计时';
-
       } else {
-
         countdownNum.innerText = '--:--';
-
       }
-
     }
-
     const todayNotes = notes.filter(n => n.date === today);
-
     const todayListDiv = document.getElementById('todayNotesList');
-
     const countSpan = document.getElementById('todayNoteCount');
-
     countSpan.innerText = todayNotes.length ? `${todayNotes.filter(n=>n.completed).length}/${todayNotes.length}` : '';
-
     if (todayNotes.length === 0) {
-
       todayListDiv.innerHTML = '<div style="color:var(--text3); text-align:center;">暂无备注</div>';
-
     } else {
-
       todayListDiv.innerHTML = todayNotes.map(n => `
-
         <div class="note-item" data-id="${n.id}">
-
           <span style="cursor:pointer" class="note-toggle">${n.completed ? '✅' : '⬜'}</span>
-
           <span style="flex:1; ${n.completed ? 'text-decoration:line-through; color:var(--text3)' : ''}">${escapeHtml(n.text)}</span>
-
           <button class="btn btn-small btn-danger note-delete" data-id="${n.id}">✕</button>
-
         </div>
-
       `).join('');
-
       document.querySelectorAll('#todayNotesList .note-toggle').forEach(el => {
-
         el.addEventListener('click', (e) => {
-
           const id = parseInt(el.closest('.note-item').dataset.id);
-
           toggleTodayNote(id);
-
         });
-
       });
-
       document.querySelectorAll('#todayNotesList .note-delete').forEach(btn => {
-
         btn.addEventListener('click', (e) => {
-
           e.stopPropagation();
-
           const id = parseInt(btn.dataset.id);
-
           delTodayNote(id);
-
         });
-
       });
-
     }
-
     const recent = [...finance].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
-
     const recentDiv = document.getElementById('recentFinance');
-
     if (recent.length === 0) recentDiv.innerHTML = '<div>暂无流水</div>';
-
     else {
-
       recentDiv.innerHTML = recent.map(f => `
-
         <div class="finance-item">
-
           <span>${f.date.slice(5)}</span>
-
           <span>${f.type==='income'?'收入':'支出'}</span>
-
           <span>${f.note || ''}</span>
-
           <span style="color:${f.type==='income'?'var(--green)':'var(--red)'}">${f.type==='income'?'+':'-'}¥${f.amount.toFixed(2)}</span>
-
         </div>
-
       `).join('');
-
     }
-
   }
 
   function toggleTodayNote(id) {
-
     const note = notes.find(n => n.id === id);
-
     if (note) { note.completed = !note.completed; save(); updateTodayUI(); renderCalendar(); renderNotesList(); }
-
   }
-
   function delTodayNote(id) {
-
     notes = notes.filter(n => n.id !== id);
-
     save(); updateTodayUI(); renderCalendar(); renderNotesList(); toast('备注已删除');
-
   }
-
   function addTodayNote() {
-
     const text = document.getElementById('todayNoteText').value.trim();
-
     if (!text) return toast('请输入内容');
-
     notes.push({ id: Date.now(), date: todayStr(), text, completed: false });
-
     document.getElementById('todayNoteText').value = '';
-
     save(); updateTodayUI(); renderCalendar(); renderNotesList(); toast('已添加');
-
   }
 
   const sentences = [
-
     "衣着配睫毛，身材尽显可爱气质，祝你今天财源广进！",
-
     "愿你今日笑靥如花，万事顺遂~",
-
     "星光不问赶路人，好运自会来敲门，加油！",
-
     "今天的你格外迷人，工作轻松，心情美丽。",
-
     "保持热爱，奔赴山海，今日幸运值 +99！"
-
   ];
-
   function getReminder() {
-
     const today = todayStr();
-
     if (reminderLog[today]) return reminderLog[today];
-
     const rand = Math.floor(Math.random() * sentences.length);
-
     const s = sentences[rand];
-
     reminderLog[today] = s;
-
     save();
-
     return s;
-
   }
-
   function updateReminder() {
-
     document.getElementById('reminderText').innerText = getReminder();
-
   }
-
   function refreshReminder() {
-
     const today = todayStr();
-
     let newSent;
-
     do { newSent = sentences[Math.floor(Math.random() * sentences.length)]; } while (newSent === reminderLog[today] && sentences.length>1);
-
     reminderLog[today] = newSent;
-
     save();
-
     updateReminder();
-
     toast('已换一句');
-
   }
-
   function copyReminder() {
-
     const text = document.getElementById('reminderText').innerText;
-
     navigator.clipboard.writeText(text).then(()=>toast('已复制')).catch(()=>toast('复制失败'));
-
   }
 
   function addQuickFinance() {
-
     const amount = parseFloat(document.getElementById('quickAmount').value);
-
     const type = document.getElementById('quickType').value;
-
     if (isNaN(amount) || amount <= 0) return toast('金额无效');
-
     finance.push({ id: Date.now(), date: todayStr(), type, amount, note: '快速记账' });
-
     document.getElementById('quickAmount').value = '';
-
     save(); updateTodayUI(); renderCalendar(); toast('已记录');
-
   }
 
   function getMonday(offset = 0) {
-
     const d = new Date();
-
     const day = d.getDay();
-
     const mon = new Date(d);
-
     mon.setDate(d.getDate() - (day === 0 ? 6 : day-1) + offset*7);
-
     return mon;
-
   }
-
   function renderWeek() {
-
     const mon = getMonday(weekOffset);
-
     const weekDays = [];
-
     for (let i=0; i<7; i++) {
-
       const d = new Date(mon);
-
       d.setDate(mon.getDate()+i);
-
       weekDays.push(d);
-
     }
-
     const rangeText = `${mon.getMonth()+1}/${mon.getDate()} - ${weekDays[6].getMonth()+1}/${weekDays[6].getDate()}`;
-
     document.getElementById('weekRange').innerText = rangeText;
-
     const rowDiv = document.getElementById('weekRow');
-
     rowDiv.innerHTML = '';
-
     weekDays.forEach(d => {
-
       const ds = fmtDate(d.getFullYear(), d.getMonth(), d.getDate());
-
       const shiftKey = schedule[ds] || '休假';
-
       const shift = shifts[shiftKey] || shifts['休假'];
-
       const isToday = (ds === todayStr());
-
       const isSelected = (ds === selWeekDay);
-
       const div = document.createElement('div');
-
       div.className = `week-day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}`;
-
       div.innerHTML = `
-
         <div style="font-size:12px;">${['日','一','二','三','四','五','六'][d.getDay()]}</div>
-
         <div style="font-size:18px; font-weight:500;">${d.getDate()}</div>
-
         <div style="font-size:11px; color:${isToday||isSelected?'white':shift.color};">${shift.name}</div>
-
       `;
-
       div.addEventListener('click', () => { selWeekDay = ds; renderWeek(); updateWeekInfo(); });
-
       rowDiv.appendChild(div);
-
     });
-
     if (!selWeekDay || !weekDays.some(d => fmtDate(d.getFullYear(), d.getMonth(), d.getDate()) === selWeekDay)) {
-
       selWeekDay = todayStr();
-
     }
-
     updateWeekInfo();
-
     renderShiftChips();
-
   }
-
   function updateWeekInfo() {
-
     const shiftKey = schedule[selWeekDay] || '休假';
-
     const shift = shifts[shiftKey] || shifts['休假'];
-
     document.getElementById('weekSelectedInfo').innerHTML = `${selWeekDay} → ${shift.name} ${shift.times.length ? '· '+shift.times.join('|') : ''}`;
-
     document.querySelectorAll('#shiftChips .shift-chip').forEach(chip => {
-
       chip.classList.toggle('active', chip.dataset.key === shiftKey);
-
     });
-
   }
-
   function renderShiftChips() {
-
     const container = document.getElementById('shiftChips');
-
     container.innerHTML = '';
-
     for (let [key, val] of Object.entries(shifts)) {
-
       const chip = document.createElement('span');
-
       chip.className = 'shift-chip';
-
       chip.innerText = val.name;
-
       chip.dataset.key = key;
-
       chip.style.borderLeft = `3px solid ${val.color}`;
-
       chip.addEventListener('click', () => {
-
         if (selWeekDay) {
-
           schedule[selWeekDay] = key;
-
           save();
-
           renderWeek();
-
           updateStatusPills();
-
           toast(`已设置 ${val.name}`);
-
         }
-
       });
-
       container.appendChild(chip);
-
     }
-
     const addChip = document.createElement('span');
-
     addChip.className = 'shift-chip';
-
     addChip.innerText = '+ 自定义';
-
     addChip.addEventListener('click', openCustomShift);
-
     container.appendChild(addChip);
-
   }
-
   function openCustomShift() {
-
     const name = prompt('请输入班次名称', '新班次');
-
     if (!name) return;
-
     const times = prompt('请输入时间段（例如 8:00-12:00,14:00-17:00）', '8:00-12:00');
-
     const color = prompt('请输入颜色代码（例如 #5ac8fa）', '#ffaa88');
-
     const timesArr = times ? times.split(',').map(s=>s.trim()).filter(s=>s) : [];
-
     const newShift = { name, times: timesArr, color: color || '#ffaa88' };
-
     shifts[name] = newShift;
-
     customShifts[name] = newShift;
-
     save();
-
     renderShiftChips();
-
     if (selWeekDay) { schedule[selWeekDay] = name; save(); renderWeek(); updateStatusPills(); toast(`已添加并应用 ${name}`); }
-
   }
-
   function applyWeekTemplate() {
-
     const tpl = ['A2','B2','治疗班','B1','A2','休假','休假'];
-
     const mon = getMonday(0);
-
     for (let i=0; i<7; i++) {
-
       const d = new Date(mon);
-
       d.setDate(mon.getDate()+i);
-
       const ds = fmtDate(d.getFullYear(), d.getMonth(), d.getDate());
-
       schedule[ds] = tpl[i];
-
     }
-
     save(); renderWeek(); updateStatusPills(); toast('模板已应用');
-
   }
 
   function renderNotesList() {
-
     const container = document.getElementById('notesList');
-
     const allNotes = [...notes].sort((a,b)=>b.date.localeCompare(a.date));
-
     if (allNotes.length === 0) { container.innerHTML = '<div style="color:var(--text3); text-align:center;">暂无备注</div>'; return; }
-
     container.innerHTML = allNotes.map(n => `
-
       <div class="note-item" data-id="${n.id}">
-
         <span class="note-date">${n.date.slice(5)}</span>
-
         <span style="flex:1; cursor:pointer;" class="note-text-toggle">${n.completed ? '<del>'+escapeHtml(n.text)+'</del>' : escapeHtml(n.text)}</span>
-
         <button class="btn btn-small btn-danger note-delete-all" data-id="${n.id}">✕</button>
-
       </div>
-
     `).join('');
-
     container.querySelectorAll('.note-text-toggle').forEach(el => {
-
       el.addEventListener('click', (e) => {
-
         const id = parseInt(el.closest('.note-item').dataset.id);
-
         toggleNote(id);
-
       });
-
     });
-
     container.querySelectorAll('.note-delete-all').forEach(btn => {
-
       btn.addEventListener('click', (e) => {
-
         e.stopPropagation();
-
         const id = parseInt(btn.dataset.id);
-
         delNote(id);
-
       });
-
     });
-
   }
-
   function addNote() {
-
     const date = document.getElementById('noteDate').value;
-
     const text = document.getElementById('noteText').value.trim();
-
     if (!date || !text) return toast('请填写日期和内容');
-
     notes.push({ id: Date.now(), date, text, completed: false });
-
     document.getElementById('noteText').value = '';
-
     save(); renderNotesList(); renderCalendar(); toast('备注已添加');
-
   }
-
   function toggleNote(id) {
-
     const n = notes.find(x => x.id === id);
-
     if (n) { n.completed = !n.completed; save(); renderNotesList(); renderCalendar(); }
-
   }
-
   function delNote(id) {
-
     notes = notes.filter(n => n.id !== id);
-
     save(); renderNotesList(); renderCalendar(); toast('备注已删除');
-
   }
 
   function renderCalendar() {
-
     const monthLabel = document.getElementById('calMonthLabel');
-
     monthLabel.innerText = `${calYear}年${calMonth+1}月`;
-
     const firstDay = new Date(calYear, calMonth, 1);
-
     const startWeek = firstDay.getDay();
-
     const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
-
     const prevDays = new Date(calYear, calMonth, 0).getDate();
-
     const grid = document.getElementById('calendarGrid');
-
     grid.innerHTML = '';
-
     const weekdays = ['日','一','二','三','四','五','六'];
-
     weekdays.forEach(w => { let d = document.createElement('div'); d.innerText = w; d.style.fontSize='12px'; d.style.color='var(--text3)'; grid.appendChild(d); });
-
     for (let i=startWeek-1; i>=0; i--) {
-
       const day = prevDays - i;
-
       const cell = createCalendarCell(calYear, calMonth-1, day, true);
-
       grid.appendChild(cell);
-
     }
-
     for (let d=1; d<=daysInMonth; d++) {
-
       const cell = createCalendarCell(calYear, calMonth, d, false);
-
       grid.appendChild(cell);
-
     }
-
     const totalCells = 42;
-
     const currentCells = grid.children.length;
-
     const remaining = totalCells - currentCells;
-
     for (let i=1; i<=remaining; i++) {
-
       const cell = createCalendarCell(calYear, calMonth+1, i, true);
-
       grid.appendChild(cell);
-
     }
-
   }
-
   function createCalendarCell(year, month, day, isOtherMonth) {
-
     let y = year, m = month;
-
     if (isOtherMonth) {
-
       if (m < 0) { m = 11; y--; }
-
       if (m > 11) { m = 0; y++; }
-
     }
-
     const ds = fmtDate(y, m, day);
-
     const isToday = (ds === todayStr());
-
     const isSelected = (ds === selDate);
-
     const cell = document.createElement('div');
-
     cell.className = `calendar-cell ${isOtherMonth ? 'other' : ''} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}`;
-
     cell.style.cssText = 'aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:16px; background:white; border:1px solid #ffe0e0; cursor:pointer; font-weight:500; color:var(--text);';
-
     if (isToday) cell.style.background = 'var(--primary)';
-
     if (isSelected) cell.style.background = 'var(--primary-dark)';
-
     cell.innerText = day;
-
     const dots = [];
-
     if (schedule[ds] && schedule[ds] !== '休假') dots.push(shifts[schedule[ds]]?.color || '#ccc');
-
     if (finance.some(f => f.date===ds && f.type==='income')) dots.push('var(--green)');
-
     if (finance.some(f => f.date===ds && f.type==='expense')) dots.push('var(--red)');
-
     if (notes.some(n => n.date===ds)) dots.push('var(--blue)');
-
     if (dots.length && !isOtherMonth) {
-
       const dotDiv = document.createElement('div');
-
       dotDiv.style.display = 'flex'; dotDiv.style.gap = '4px'; dotDiv.style.marginTop = '4px';
-
       dots.slice(0,3).forEach(col => {
-
         const span = document.createElement('span');
-
         span.style.width = '5px'; span.style.height = '5px'; span.style.borderRadius = '50%'; span.style.background = col;
-
         dotDiv.appendChild(span);
-
       });
-
       cell.appendChild(dotDiv);
-
     }
-
     cell.addEventListener('click', () => {
-
       if (isOtherMonth) return;
-
       selDate = ds;
-
       renderCalendar();
-
       showDayDetail(ds);
-
     });
-
     return cell;
-
   }
-
   function showDayDetail(ds) {
-
     const shiftKey = schedule[ds] || '休假';
-
     const shift = shifts[shiftKey];
-
     const dayFinance = finance.filter(f => f.date === ds);
-
     const dayNotes = notes.filter(n => n.date === ds);
-
     let html = `<div style="margin-bottom:12px;"><strong>${ds}</strong> 排班：${shift.name} ${shift.times.length ? shift.times.join(' ') : '休息'}</div>`;
-
     html += `<div><strong>💰 收支</strong></div>`;
-
     if (dayFinance.length) {
-
       dayFinance.forEach(f => {
-
         html += `<div>${f.type==='income'?'+':'-'}¥${f.amount} (${f.note||''}) <button class="btn-small btn-danger" data-del-fin="${f.id}">删除</button></div>`;
-
       });
-
     } else html += `<div>无记录</div>`;
-
     html += `<button id="addFinBtn" class="btn-small" style="margin:8px 0;">+ 记账</button>`;
-
     html += `<div><strong>📝 备注</strong></div>`;
-
     if (dayNotes.length) {
-
       dayNotes.forEach(n => {
-
         html += `<div>${n.completed?'✅':'⬜'} ${n.text} <button class="btn-small btn-danger" data-del-note="${n.id}">删除</button></div>`;
-
       });
-
     } else html += `<div>无备注</div>`;
-
     html += `<button id="addNoteDayBtn" class="btn-small">+ 添加备注</button><br/><br/>`;
-
     html += `<button id="clearDayBtn" class="btn-danger">清空该日所有数据</button>`;
-
     const overlay = document.createElement('div');
-
     overlay.style.position='fixed'; overlay.style.top=0; overlay.style.left=0; overlay.style.right=0; overlay.style.bottom=0; overlay.style.background='rgba(0,0,0,0.3)'; overlay.style.zIndex=1000; overlay.style.display='flex'; overlay.style.alignItems='flex-end'; overlay.style.justifyContent='center';
-
     const sheetDiv = document.createElement('div');
-
     sheetDiv.style.background='white'; sheetDiv.style.borderRadius='20px 20px 0 0'; sheetDiv.style.width='100%'; sheetDiv.style.maxWidth='430px'; sheetDiv.style.padding='20px'; sheetDiv.style.maxHeight='70vh'; sheetDiv.style.overflowY='auto';
-
     sheetDiv.innerHTML = html;
-
     overlay.appendChild(sheetDiv);
-
     document.body.appendChild(overlay);
-
     const closeSheet = () => overlay.remove();
-
     sheetDiv.querySelectorAll('[data-del-fin]').forEach(btn => {
-
       btn.addEventListener('click', () => {
-
         const id = parseInt(btn.dataset.delFin);
-
         finance = finance.filter(f => f.id !== id);
-
         save(); renderCalendar(); closeSheet(); toast('已删除');
-
       });
-
     });
-
     sheetDiv.querySelectorAll('[data-del-note]').forEach(btn => {
-
       btn.addEventListener('click', () => {
-
         const id = parseInt(btn.dataset.delNote);
-
         notes = notes.filter(n => n.id !== id);
-
         save(); renderCalendar(); closeSheet(); toast('备注已删除');
-
       });
-
     });
-
     sheetDiv.querySelector('#addFinBtn').addEventListener('click', () => {
-
       const type = confirm('收入？点确定=收入，取消=支出') ? 'income' : 'expense';
-
       const amt = parseFloat(prompt('金额'));
-
       if (!isNaN(amt) && amt>0) {
-
         const note = prompt('备注','');
-
         finance.push({ id: Date.now(), date: ds, type, amount: amt, note: note || '' });
-
         save(); renderCalendar(); closeSheet(); toast('已记账');
-
       } else toast('金额无效');
-
     });
-
     sheetDiv.querySelector('#addNoteDayBtn').addEventListener('click', () => {
-
       const text = prompt('输入备注');
-
       if (text && text.trim()) {
-
         notes.push({ id: Date.now(), date: ds, text: text.trim(), completed: false });
-
         save(); renderCalendar(); closeSheet(); toast('备注已添加');
-
       }
-
     });
-
     sheetDiv.querySelector('#clearDayBtn').addEventListener('click', () => {
-
       if (confirm(`确定清空 ${ds} 的所有排班、收支和备注吗？`)) {
-
         delete schedule[ds];
-
         finance = finance.filter(f => f.date !== ds);
-
         notes = notes.filter(n => n.date !== ds);
-
         delete reminderLog[ds];
-
         save(); renderCalendar(); closeSheet(); toast('已清空');
-
       }
-
     });
-
     overlay.addEventListener('click', (e) => { if (e.target === overlay) closeSheet(); });
-
   }
 
   function changeMonth(delta) {
-
     calMonth += delta;
-
     if (calMonth > 11) { calMonth = 0; calYear++; }
-
     if (calMonth < 0) { calMonth = 11; calYear--; }
-
     renderCalendar();
-
   }
 
+  // 区间统计（收支） - 现在位于统计页面
   function queryStats() {
-
     const from = document.getElementById('statsFrom').value;
-
     const to = document.getElementById('statsTo').value;
-
     if (!from || !to) { toast('请选择起止日期'); return; }
-
     const filtered = finance.filter(f => f.date >= from && f.date <= to);
-
     let income = 0, expense = 0;
-
     filtered.forEach(f => { if (f.type==='income') income+=f.amount; else expense+=f.amount; });
-
     document.getElementById('statsIncome').innerHTML = `¥${income.toFixed(2)}`;
-
     document.getElementById('statsExpense').innerHTML = `¥${expense.toFixed(2)}`;
-
     document.getElementById('statsBalance').innerHTML = `¥${(income-expense).toFixed(2)}`;
-
     const listDiv = document.getElementById('statsList');
-
     if (filtered.length === 0) listDiv.innerHTML = '<div>无记录</div>';
-
     else {
-
       listDiv.innerHTML = filtered.sort((a,b)=>b.date.localeCompare(a.date)).map(f => `
-
         <div class="finance-item">${f.date} ${f.type==='income'?'收入':'支出'} ${f.note||''} ${f.type==='income'?'+':'-'}¥${f.amount.toFixed(2)}</div>
-
       `).join('');
-
     }
+  }
 
+  // 新增排班统计表函数
+  function queryShiftStats() {
+    const from = document.getElementById('shiftStatFrom').value;
+    const to = document.getElementById('shiftStatTo').value;
+    if (!from || !to) { toast('请选择排班统计的起止日期'); return; }
+    const startDate = new Date(from);
+    const endDate = new Date(to);
+    if (startDate > endDate) { toast('开始日期不能晚于结束日期'); return; }
+    // 统计区间内的排班分布
+    const shiftCount = {};
+    let totalDays = 0;
+    let current = new Date(startDate);
+    while (current <= endDate) {
+      const ds = fmtDate(current.getFullYear(), current.getMonth(), current.getDate());
+      const shiftKey = schedule[ds] || '休假';
+      const shiftName = shifts[shiftKey]?.name || '休假';
+      shiftCount[shiftName] = (shiftCount[shiftName] || 0) + 1;
+      totalDays++;
+      current.setDate(current.getDate() + 1);
+    }
+    // 生成表格
+    const resultDiv = document.getElementById('shiftStatsResult');
+    if (totalDays === 0) {
+      resultDiv.innerHTML = '<div class="stat-summary">所选区间无数据</div>';
+      return;
+    }
+    let html = `<table class="stat-table"><thead><tr><th>班次</th><th>天数</th><th>占比</th></tr></thead><tbody>`;
+    for (const [name, count] of Object.entries(shiftCount)) {
+      const percent = ((count / totalDays) * 100).toFixed(1);
+      html += `<tr><td>${name}</td><td>${count} 天</td><td>${percent}%</td></tr>`;
+    }
+    html += `</tbody></table><div class="stat-summary">统计区间：${from} 至 ${to}<br>合计 ${totalDays} 天</div>`;
+    resultDiv.innerHTML = html;
   }
 
   function updateStatusPills() {
-
     const container = document.getElementById('statusPills');
-
     if (!container) return;
-
     const now = new Date();
-
     const curMin = now.getHours()*60 + now.getMinutes();
-
     const today = todayStr();
-
     const mon = getMonday(0);
-
     let pillsHtml = '';
-
     const dayNames = ['日','一','二','三','四','五','六'];
-
     for (let i=0; i<7; i++) {
-
       const d = new Date(mon); d.setDate(mon.getDate()+i);
-
       const ds = fmtDate(d.getFullYear(), d.getMonth(), d.getDate());
-
       const sk = schedule[ds];
-
       if (!sk || sk === '休假') continue;
-
       const st = shifts[sk];
-
       if (!st || !st.times.length) continue;
-
       let ended = false;
-
       if (ds === today) {
-
         const ranges = getRanges(sk);
-
         ended = ranges.every(r => curMin >= r.endMin);
-
       } else if (ds < today) ended = true;
-
       const endedClass = ended ? 'ended' : '';
-
       pillsHtml += `<span class="status-pill ${endedClass}" style="color:${st.color}; border-color:${st.color}40; background:${st.color}10">${dayNames[d.getDay()]} ${st.name}</span>`;
-
     }
-
     if (!pillsHtml) pillsHtml = '<span style="font-size:10px;color:var(--text3)">本周无排班</span>';
-
     container.innerHTML = pillsHtml;
-
   }
 
   function escapeHtml(str) {
-
     return str.replace(/[&<>]/g, function(m) {
-
       if (m === '&') return '&amp;';
-
       if (m === '<') return '&lt;';
-
       if (m === '>') return '&gt;';
-
       return m;
-
     });
-
   }
 
   function switchTab(pageId) {
-
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-
     document.getElementById(pageId).classList.add('active');
-
     document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-
     document.querySelector(`.tab-item[data-tab="${pageId}"]`).classList.add('active');
-
     curPage = pageId;
-
     if (pageId === 'page-today') updateTodayUI();
-
     else if (pageId === 'page-week') renderWeek();
-
     else if (pageId === 'page-calendar') renderCalendar();
-
+    else if (pageId === 'page-stats') {
+      // 每次打开统计页面时，刷新一下默认查询（可选）
+      const today = todayStr();
+      if (!document.getElementById('statsFrom').value) document.getElementById('statsFrom').value = today;
+      if (!document.getElementById('statsTo').value) document.getElementById('statsTo').value = today;
+      if (!document.getElementById('shiftStatFrom').value) document.getElementById('shiftStatFrom').value = today;
+      if (!document.getElementById('shiftStatTo').value) document.getElementById('shiftStatTo').value = today;
+      queryStats();        // 自动显示当日收支
+      queryShiftStats();   // 自动显示当日排班统计
+    }
   }
 
   // 事件绑定
-
   document.getElementById('refreshReminderBtn').addEventListener('click', refreshReminder);
-
   document.getElementById('copyReminderBtn').addEventListener('click', copyReminder);
-
   document.getElementById('addTodayNoteBtn').addEventListener('click', addTodayNote);
-
   document.getElementById('gotoCalendarBtn').addEventListener('click', () => switchTab('page-calendar'));
-
   document.getElementById('quickFinanceBtn').addEventListener('click', addQuickFinance);
-
   document.getElementById('prevWeekBtn').addEventListener('click', () => { weekOffset--; renderWeek(); updateStatusPills(); });
-
   document.getElementById('nextWeekBtn').addEventListener('click', () => { weekOffset++; renderWeek(); updateStatusPills(); });
-
   document.getElementById('applyTemplateBtn').addEventListener('click', applyWeekTemplate);
-
   document.getElementById('addNoteBtn').addEventListener('click', addNote);
-
   document.getElementById('prevMonthBtn').addEventListener('click', () => changeMonth(-1));
-
   document.getElementById('nextMonthBtn').addEventListener('click', () => changeMonth(1));
-
   document.getElementById('queryStatsBtn').addEventListener('click', queryStats);
-
+  document.getElementById('queryShiftStatsBtn').addEventListener('click', queryShiftStats);
   document.querySelectorAll('.tab-item').forEach(tab => {
-
     tab.addEventListener('click', () => switchTab(tab.dataset.tab));
-
   });
 
   // 初始化
-
   load();
-
   const today = todayStr();
-
   selDate = today;
-
   selWeekDay = today;
-
+  // 设置统计页面的默认日期
   document.getElementById('statsFrom').value = today;
-
   document.getElementById('statsTo').value = today;
-
+  document.getElementById('shiftStatFrom').value = today;
+  document.getElementById('shiftStatTo').value = today;
   document.getElementById('noteDate').value = today;
-
   updateReminder();
-
   updateTodayUI();
-
   renderWeek();
-
   renderCalendar();
-
   renderNotesList();
-
   updateStatusPills();
-
+  // 定时刷新倒计时和状态栏
   setInterval(() => {
-
     if (curPage === 'page-today') updateTodayUI();
-
     updateStatusPills();
-
   }, 1000);
-
   switchTab('page-today');
-
 })();
-
 </script>
-
 </body>
-
 </html>
