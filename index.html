@@ -302,29 +302,29 @@ select.input{appearance:none;-webkit-appearance:none;background-image:url("data:
 
       <div class="card"><div class="card-header"><span class="card-title">倒计时</span><span class="status-badge status-resting" id="countdownBadge">休息中</span></div><div class="countdown-wrap"><div class="countdown-num" id="countdownDisplay">🎉</div><div class="countdown-info"><div class="countdown-label" id="countdownLabel">今日休假</div><div class="countdown-target" id="countdownTarget">享受美好时光</div></div></div></div>
 
-      <div class="reminder-card"><div class="reminder-text" id="reminderText">衣着配睫毛，身材尽显可爱气质，祝你今天财源广进！</div><div class="reminder-date" id="reminderDate"><span class="date-highlight">06月10日</span> · 今日专属</div><div class="reminder-actions"><button class="btn btn-small" onclick="refreshReminder()">换一句</button><button class="btn btn-small" onclick="copyReminder()">复制</button></div></div>
+      <div class="reminder-card"><div class="reminder-text" id="reminderText">衣着配睫毛，身材尽显可爱气质，祝你今天财源广进！</div><div class="reminder-date" id="reminderDate"><span class="date-highlight">06月10日</span> · 今日专属</div><div class="reminder-actions"><button class="btn btn-small" id="refreshReminderBtn">换一句</button><button class="btn btn-small" id="copyReminderBtn">复制</button></div></div>
 
-      <div class="card" id="todayNotesCard"><div class="card-header"><span class="card-title">今日备注</span><span class="card-sub" id="todayNoteCount"></span></div><div id="todayNotesList" style="max-height:180px;overflow-y:auto"><div class="empty-state" style="padding:12px 0;font-size:13px">今天还没有备注，写点什么吧 ✍️</div></div><div class="divider" style="margin:6px 0 8px"></div><div class="note-input-row" style="margin-top:0"><input class="input" type="text" id="todayNoteText" placeholder="添加今日备注…"><button class="btn btn-primary btn-small" onclick="addTodayNote()" style="flex-shrink:0">添加</button></div></div>
+      <div class="card" id="todayNotesCard"><div class="card-header"><span class="card-title">今日备注</span><span class="card-sub" id="todayNoteCount"></span></div><div id="todayNotesList" style="max-height:180px;overflow-y:auto"><div class="empty-state" style="padding:12px 0;font-size:13px">今天还没有备注，写点什么吧 ✍️</div></div><div class="divider" style="margin:6px 0 8px"></div><div class="note-input-row" style="margin-top:0"><input class="input" type="text" id="todayNoteText" placeholder="添加今日备注…"><button class="btn btn-primary btn-small" id="addTodayNoteBtn">添加</button></div></div>
 
-      <div class="card"><div class="card-header"><span class="card-title">最近流水</span><button class="btn btn-small" onclick="switchTab('page-calendar')">全部</button></div><div id="recentFinance" style="max-height:130px;overflow-y:auto"><div class="empty-state">暂无收支记录</div></div><div class="quick-row"><input class="input" type="number" id="quickAmount" placeholder="金额" style="flex:1;min-width:0"><select class="input" id="quickType" style="width:80px;flex-shrink:0"><option value="income">收入</option><option value="expense">支出</option></select><button class="btn btn-primary btn-small" onclick="addQuickFinance()" style="flex-shrink:0">记一笔</button></div></div>
+      <div class="card"><div class="card-header"><span class="card-title">最近流水</span><button class="btn btn-small" id="gotoCalendarBtn">全部</button></div><div id="recentFinance" style="max-height:130px;overflow-y:auto"><div class="empty-state">暂无收支记录</div></div><div class="quick-row"><input class="input" type="number" id="quickAmount" placeholder="金额" style="flex:1;min-width:0"><select class="input" id="quickType" style="width:80px;flex-shrink:0"><option value="income">收入</option><option value="expense">支出</option></select><button class="btn btn-primary btn-small" id="quickFinanceBtn">记一笔</button></div></div>
 
     </div>
 
     <div class="page" id="page-week">
 
-      <div class="card"><div class="card-header"><span class="card-title">排班</span><div style="display:flex;gap:4px;align-items:center"><span class="week-nav-btn" onclick="scrollWeek(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></span><span class="card-sub" id="weekRange">6/8 - 6/14</span><span class="week-nav-btn" onclick="scrollWeek(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></span></div></div><div class="week-wrap" id="weekWrap"><div class="week-row" id="weekRow"></div></div><div class="divider"></div><div style="font-size:12px;color:var(--text3);margin-bottom:6px;">选排班类型</div><div class="shift-selector" id="weekShiftSelector"></div><div style="margin-top:8px;font-size:12px;color:var(--text2);font-weight:500;" id="weekSelectedInfo">2026-06-10 → 休假 · 休息</div></div>
+      <div class="card"><div class="card-header"><span class="card-title">排班</span><div style="display:flex;gap:4px;align-items:center"><span class="week-nav-btn" id="prevWeekBtn"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></span><span class="card-sub" id="weekRange">6/8 - 6/14</span><span class="week-nav-btn" id="nextWeekBtn"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></span></div></div><div class="week-wrap" id="weekWrap"><div class="week-row" id="weekRow"></div></div><div class="divider"></div><div style="font-size:12px;color:var(--text3);margin-bottom:6px;">选排班类型</div><div class="shift-selector" id="weekShiftSelector"></div><div style="margin-top:8px;font-size:12px;color:var(--text2);font-weight:500;" id="weekSelectedInfo">2026-06-10 → 休假 · 休息</div></div>
 
-      <button class="btn btn-primary btn-full" onclick="applyWeekTemplate()">快速应用本周模板</button>
+      <button class="btn btn-primary btn-full" id="applyTemplateBtn">快速应用本周模板</button>
 
-      <div class="card notes-section"><div class="card-header"><span class="card-title">备注</span></div><div class="note-input-row"><input class="input" type="date" id="noteDate" style="width:auto;flex:0 0 auto"><input class="input" type="text" id="noteText" placeholder="写点什么…"><button class="btn btn-primary btn-small" onclick="addNote()" style="flex-shrink:0">添加</button></div><div id="notesList"><div class="note-empty">暂无备注</div></div></div>
+      <div class="card notes-section"><div class="card-header"><span class="card-title">备注</span></div><div class="note-input-row"><input class="input" type="date" id="noteDate" style="width:auto;flex:0 0 auto"><input class="input" type="text" id="noteText" placeholder="写点什么…"><button class="btn btn-primary btn-small" id="addNoteBtn">添加</button></div><div id="notesList"><div class="note-empty">暂无备注</div></div></div>
 
     </div>
 
     <div class="page" id="page-calendar">
 
-      <div class="card"><div class="calendar-header"><div class="calendar-nav" onclick="changeMonth(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div class="calendar-month" id="calMonthLabel">2026年6月</div><div class="calendar-nav" onclick="changeMonth(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></div></div><div class="calendar-grid" id="calGrid"></div><div class="legend"><span class="legend-item"><span class="legend-dot" style="background:var(--primary)"></span>排班</span><span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>收入</span><span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>支出</span><span class="legend-item"><span class="legend-dot" style="background:var(--blue)"></span>备注</span></div></div>
+      <div class="card"><div class="calendar-header"><div class="calendar-nav" id="prevMonthBtn"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div class="calendar-month" id="calMonthLabel">2026年6月</div><div class="calendar-nav" id="nextMonthBtn"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></div></div><div class="calendar-grid" id="calGrid"></div><div class="legend"><span class="legend-item"><span class="legend-dot" style="background:var(--primary)"></span>排班</span><span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>收入</span><span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>支出</span><span class="legend-item"><span class="legend-dot" style="background:var(--blue)"></span>备注</span></div></div>
 
-      <div class="card"><div class="card-header"><span class="card-title">区间统计</span></div><div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><input class="input" type="date" id="statsFrom" style="flex:1"><span style="color:var(--text3);font-size:12px;">至</span><input class="input" type="date" id="statsTo" style="flex:1"><button class="btn btn-primary btn-small" onclick="queryStats()">查询</button></div><div class="summary-row"><div class="summary-item"><div class="summary-val" style="color:var(--green)" id="statsIncome">¥0</div><div class="summary-lbl">收入</div></div><div class="summary-item"><div class="summary-val" style="color:var(--red)" id="statsExpense">¥0</div><div class="summary-lbl">支出</div></div><div class="summary-item"><div class="summary-val" id="statsBalance">¥0</div><div class="summary-lbl">结余</div></div></div><div id="statsList" style="max-height:160px;overflow-y:auto"></div></div>
+      <div class="card"><div class="card-header"><span class="card-title">区间统计</span></div><div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><input class="input" type="date" id="statsFrom" style="flex:1"><span style="color:var(--text3);font-size:12px;">至</span><input class="input" type="date" id="statsTo" style="flex:1"><button class="btn btn-primary btn-small" id="queryStatsBtn">查询</button></div><div class="summary-row"><div class="summary-item"><div class="summary-val" style="color:var(--green)" id="statsIncome">¥0</div><div class="summary-lbl">收入</div></div><div class="summary-item"><div class="summary-val" style="color:var(--red)" id="statsExpense">¥0</div><div class="summary-lbl">支出</div></div><div class="summary-item"><div class="summary-val" id="statsBalance">¥0</div><div class="summary-lbl">结余</div></div></div><div id="statsList" style="max-height:160px;overflow-y:auto"></div></div>
 
     </div>
 
@@ -341,6 +341,8 @@ select.input{appearance:none;-webkit-appearance:none;background-image:url("data:
 (function(){
 
 'use strict';
+
+// ---------- 数据定义 ----------
 
 const STORAGE_KEY = 'schedule_app_v3';
 
@@ -376,6 +378,8 @@ let calYear, calMonth, selDate = null, selWeekDay = null, curPage = 'page-today'
 
 const now = new Date(); calYear = now.getFullYear(); calMonth = now.getMonth();
 
+// ---------- 工具函数 ----------
+
 const fmtDate = (y,m,d) => `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
 
 const todayStr = () => { const t=new Date(); return fmtDate(t.getFullYear(),t.getMonth(),t.getDate()); };
@@ -386,41 +390,31 @@ function save(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({shifts,s
 
 function load(){ try{ const r=localStorage.getItem(STORAGE_KEY); if(r){ const d=JSON.parse(r); if(d.shifts) shifts=d.shifts; if(d.schedule) schedule=d.schedule; if(d.finance) finance=d.finance; if(d.notes) notes=d.notes; if(d.reminderLog) reminderLog=d.reminderLog; if(d.used) used=d.used; if(d.customShifts) customShifts=d.customShifts; if(d.noteIdCounter) noteIdCounter=d.noteIdCounter; if(d.finIdCounter) finIdCounter=d.finIdCounter; if(d.calYear!==undefined) calYear=d.calYear; if(d.calMonth!==undefined) calMonth=d.calMonth; } }catch(e){} Object.assign(shifts, customShifts); }
 
+function toast(msg){ const c=document.getElementById('toastContainer'); const t=document.createElement('div'); t.className='toast'; t.textContent=msg; c.appendChild(t); setTimeout(()=>t.remove(),2100); }
+
 function parseTime(s){ let next=false, clean=s; if(s.includes('次日')){ next=true; clean=s.replace('次日',''); } const [h,m]=clean.split(':').map(Number); return {hours:h,minutes:m||0,isNextDay:next}; }
 
 function getRanges(key){ const st=shifts[key]; if(!st||!st.times||!st.times.length) return []; return st.times.map(t=>{ const [s,e]=t.split('-'); const sp=parseTime(s.trim()), ep=parseTime(e.trim()); let sm=sp.hours*60+sp.minutes, em=ep.hours*60+ep.minutes; if(ep.isNextDay) em+=1440; if(sp.isNextDay) sm+=1440; if(em<sm) em+=1440; return {startMin:sm,endMin:em,startStr:s.trim(),endStr:e.trim(),overnight:ep.isNextDay}; }); }
-
-function toast(msg){ const c=document.getElementById('toastContainer'); const t=document.createElement('div'); t.className='toast'; t.textContent=msg; c.appendChild(t); setTimeout(()=>t.remove(),2100); }
 
 function sheet(title, html, onSave){ const container=document.getElementById('modalContainer'); const ov=document.createElement('div'); ov.className='sheet-overlay'; ov.innerHTML=`<div class="sheet"><div class="sheet-handle"></div><div class="sheet-title">${title}</div><div>${html}</div><div class="sheet-actions"><button class="btn btn-ghost" id="sheetCancel">取消</button><button class="btn btn-primary" id="sheetSave">保存</button></div></div>`; container.appendChild(ov); const close=()=>ov.remove(); ov.querySelector('#sheetCancel').addEventListener('click',close); ov.querySelector('#sheetSave').addEventListener('click',()=>{if(onSave) onSave(ov,close);}); ov.addEventListener('click',e=>{if(e.target===ov) close();}); }
 
 function sheetInfo(title, html){ const container=document.getElementById('modalContainer'); const ov=document.createElement('div'); ov.className='sheet-overlay'; ov.innerHTML=`<div class="sheet"><div class="sheet-handle"></div><div class="sheet-title">${title}</div><div>${html}</div></div>`; container.appendChild(ov); const close=()=>ov.remove(); ov.addEventListener('click',e=>{if(e.target===ov) close();}); }
 
+// ---------- 页面切换 ----------
+
 function switchTab(page){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active')); document.getElementById(page).classList.add('active'); document.querySelector(`[data-tab="${page}"]`).classList.add('active'); curPage=page; document.getElementById('mainContent').scrollTop=0; if(page==='page-today') refreshToday(); else if(page==='page-week') refreshWeek(); else if(page==='page-calendar') renderCalendar(); }
 
-window.switchTab=switchTab;
-
-// 更新倒计时 (修复跨日班次)
+// ---------- 今日模块 ----------
 
 function updateCountdown(){
 
-  const t=todayStr();
+  const t=todayStr(); const sk=schedule[t]||'休假'; const st=shifts[sk]||shifts['休假'];
 
-  const sk=schedule[t]||'休假';
+  const nowDate=new Date(); const cur=nowDate.getHours()*60+nowDate.getMinutes();
 
-  const st=shifts[sk]||shifts['休假'];
+  const ranges=getRanges(sk); const badge=document.getElementById('countdownBadge');
 
-  const nowDate=new Date();
-
-  const cur=nowDate.getHours()*60+nowDate.getMinutes();
-
-  const ranges=getRanges(sk);
-
-  const badge=document.getElementById('countdownBadge');
-
-  const display=document.getElementById('countdownDisplay');
-
-  const label=document.getElementById('countdownLabel');
+  const display=document.getElementById('countdownDisplay'); const label=document.getElementById('countdownLabel');
 
   const target=document.getElementById('countdownTarget');
 
@@ -431,8 +425,6 @@ function updateCountdown(){
   for(const r of ranges){
 
     let start=r.startMin, end=r.endMin;
-
-    let effectiveStart=start, effectiveEnd=end;
 
     if(r.overnight && end>1440){
 
@@ -466,29 +458,19 @@ function updateCountdown(){
 
   }
 
-  const tgtMin=inWork?nextEnd:nextStart;
+  const tgtMin=inWork?nextEnd:nextStart; if(tgtMin===null){ display.textContent='--:--'; return; }
 
-  if(tgtMin===null){ display.textContent='--:--'; return; }
-
-  let diff = inWork ? (tgtMin - cur) : (tgtMin - cur);
-
-  if(diff<0) diff+=1440;
+  let diff = inWork ? (tgtMin - cur) : (tgtMin - cur); if(diff<0) diff+=1440;
 
   const h=Math.floor(diff/60), m=diff%60, s=59-nowDate.getSeconds();
 
-  display.textContent=`${pad2(h)}:${pad2(m)}:${pad2(Math.max(0,s))}`;
-
-  label.textContent=nextLabel;
+  display.textContent=`${pad2(h)}:${pad2(m)}:${pad2(Math.max(0,s))}`; label.textContent=nextLabel;
 
   target.textContent=inWork?`预计${h}h${m}m后下班`:`还有约${h}h${m}m`;
 
-  badge.textContent=inWork?'工作中':'待上班';
-
-  badge.className='status-badge '+(inWork?'status-working':'status-upcoming');
+  badge.textContent=inWork?'工作中':'待上班'; badge.className='status-badge '+(inWork?'status-working':'status-upcoming');
 
 }
-
-function refreshToday(){ const t=todayStr(); const sk=schedule[t]||'休假'; const st=shifts[sk]||shifts['休假']; document.getElementById('todayBadge').textContent=st.name; document.getElementById('todayBadge').style.background=st.color; document.getElementById('todayShiftTime').textContent=st.times.length?st.times.join(' | '):'休息日'; document.getElementById('todayShiftSub').textContent=st.times.length?'今日班次':'好好享受～'; updateCountdown(); updateReminder(); updateRecentFinance(); updateTodayNotes(); }
 
 function genSentence(){ const pick=a=>a[Math.floor(Math.random()*a.length)]; const tpl=pick(TEMPLATES); const w={appearance:pick(PRAISE.appearance),clothing:pick(PRAISE.clothing),figure:pick(PRAISE.figure),lucky:pick(PRAISE.lucky)}; const praises=[pick(PRAISE.praise),pick(PRAISE.praise)]; let idx=0; return tpl.replace(/\{appearance\}/g,w.appearance).replace(/\{clothing\}/g,w.clothing).replace(/\{figure\}/g,w.figure).replace(/\{lucky\}/g,w.lucky).replace(/\{praise\}/g,()=>praises[idx++]||pick(PRAISE.praise)); }
 
@@ -500,45 +482,51 @@ function getReminder(){ const t=todayStr(); if(reminderLog[t]) return reminderLo
 
 function updateReminder(){ const s=getReminder(); document.getElementById('reminderText').textContent=s; const t=todayStr(); const [y,m,d]=t.split('-'); document.getElementById('reminderDate').innerHTML=`<span class="date-highlight">${m}月${d}日</span> · 今日专属`; }
 
-window.refreshReminder=function(){ const t=todayStr(); const {sentence,hash}=genUnique(); const old=reminderLog[t]?hash(reminderLog[t]):null; if(old) used=used.filter(c=>c.hash!==old); reminderLog[t]=sentence; used.push({hash,date:t}); save(); updateReminder(); toast('已刷新'); };
+function refreshReminder(){ const t=todayStr(); const {sentence,hash}=genUnique(); const old=reminderLog[t]?hash(reminderLog[t]):null; if(old) used=used.filter(c=>c.hash!==old); reminderLog[t]=sentence; used.push({hash,date:t}); save(); updateReminder(); toast('已刷新'); }
 
-window.copyReminder=function(){ const t=document.getElementById('reminderText').textContent; navigator.clipboard?.writeText(t).then(()=>toast('已复制')).catch(()=>toast('复制失败')); };
+function copyReminder(){ const t=document.getElementById('reminderText').textContent; navigator.clipboard?.writeText(t).then(()=>toast('已复制')).catch(()=>toast('复制失败')); }
 
 function updateRecentFinance(){ const el=document.getElementById('recentFinance'); const recent=[...finance].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5); if(!recent.length){ el.innerHTML='<div class="empty-state">暂无收支记录</div>'; return; } el.innerHTML=recent.map(f=>{ const cls=f.type==='income'?'income':'expense'; return `<div class="finance-item"><span class="tag tag-${cls}">${f.type==='income'?'收入':'支出'}</span><span style="flex:1;font-size:12px;color:var(--text2)">${f.note||''}</span><span class="finance-amount ${cls}">${f.type==='income'?'+':'-'}¥${f.amount.toFixed(2)}</span></div>`; }).join(''); }
 
-function updateTodayNotes(){ const el=document.getElementById('todayNotesList'); const cnt=document.getElementById('todayNoteCount'); const t=todayStr(); const todayNotes=notes.filter(n=>n.date===t); const done=todayNotes.filter(n=>n.completed).length; cnt.textContent=todayNotes.length?`${done}/${todayNotes.length}`:''; if(!todayNotes.length){ el.innerHTML='<div class="empty-state" style="padding:12px 0;font-size:13px">今天还没有备注，写点什么吧 ✍️</div>'; return; } el.innerHTML=todayNotes.map(n=>`<div class="note-item${n.completed?' completed':''}" style="cursor:pointer" onclick="toggleTodayNote(${n.id})"><span class="note-check">${n.completed?'✅':'⬜'}</span><span class="note-text" style="flex:1">${n.completed?'<del style="color:var(--text3)">'+n.text+'</del>':n.text}</span><button class="btn btn-small btn-danger" onclick="event.stopPropagation();delTodayNote(${n.id})" style="padding:2px 8px;flex-shrink:0">✕</button></div>`).join(''); }
+function updateTodayNotes(){ const el=document.getElementById('todayNotesList'); const cnt=document.getElementById('todayNoteCount'); const t=todayStr(); const todayNotes=notes.filter(n=>n.date===t); const done=todayNotes.filter(n=>n.completed).length; cnt.textContent=todayNotes.length?`${done}/${todayNotes.length}`:''; if(!todayNotes.length){ el.innerHTML='<div class="empty-state" style="padding:12px 0;font-size:13px">今天还没有备注，写点什么吧 ✍️</div>'; return; } el.innerHTML=todayNotes.map(n=>`<div class="note-item${n.completed?' completed':''}" data-noteid="${n.id}" style="cursor:pointer"><span class="note-check">${n.completed?'✅':'⬜'}</span><span class="note-text" style="flex:1">${n.completed?'<del style="color:var(--text3)">'+n.text+'</del>':n.text}</span><button class="btn btn-small btn-danger del-today-note" data-id="${n.id}" style="padding:2px 8px;flex-shrink:0">✕</button></div>`).join(''); document.querySelectorAll('#todayNotesList .note-item').forEach(el=>{ el.addEventListener('click',(e)=>{ if(e.target.classList.contains('del-today-note')) return; const id=parseInt(el.dataset.noteid); toggleTodayNote(id); }); }); document.querySelectorAll('#todayNotesList .del-today-note').forEach(btn=>{ btn.addEventListener('click',(e)=>{ e.stopPropagation(); const id=parseInt(btn.dataset.id); delTodayNote(id); }); }); }
 
-window.addTodayNote=function(){ const input=document.getElementById('todayNoteText'); const text=input.value.trim(); if(!text){toast('请输入备注内容');return;} notes.push({id:noteIdCounter++,date:todayStr(),text,completed:false}); input.value=''; save(); updateTodayNotes(); if(curPage==='page-calendar') renderCalendar(); toast('备注已添加'); };
+function addTodayNote(){ const input=document.getElementById('todayNoteText'); const text=input.value.trim(); if(!text){toast('请输入备注内容');return;} notes.push({id:noteIdCounter++,date:todayStr(),text,completed:false}); input.value=''; save(); updateTodayNotes(); if(curPage==='page-calendar') renderCalendar(); toast('备注已添加'); }
 
-window.toggleTodayNote=function(id){ const n=notes.find(x=>x.id===id); if(n){n.completed=!n.completed;save();updateTodayNotes();if(curPage==='page-calendar') renderCalendar();} };
+function toggleTodayNote(id){ const n=notes.find(x=>x.id===id); if(n){n.completed=!n.completed;save();updateTodayNotes();if(curPage==='page-calendar') renderCalendar();} }
 
-window.delTodayNote=function(id){ notes=notes.filter(n=>n.id!==id); save();updateTodayNotes();if(curPage==='page-calendar') renderCalendar(); toast('备注已删除'); };
+function delTodayNote(id){ notes=notes.filter(n=>n.id!==id); save();updateTodayNotes();if(curPage==='page-calendar') renderCalendar(); toast('备注已删除'); }
 
-window.addQuickFinance=function(){ const amt=parseFloat(document.getElementById('quickAmount').value); const type=document.getElementById('quickType').value; if(isNaN(amt)||amt<=0){ toast('请输入有效金额'); return; } finance.push({id:finIdCounter++,date:todayStr(),type,amount:amt,note:'快速记账'}); document.getElementById('quickAmount').value=''; save(); updateRecentFinance(); if(curPage==='page-calendar') renderCalendar(); toast('已记录'); };
+function addQuickFinance(){ const amt=parseFloat(document.getElementById('quickAmount').value); const type=document.getElementById('quickType').value; if(isNaN(amt)||amt<=0){ toast('请输入有效金额'); return; } finance.push({id:finIdCounter++,date:todayStr(),type,amount:amt,note:'快速记账'}); document.getElementById('quickAmount').value=''; save(); updateRecentFinance(); if(curPage==='page-calendar') renderCalendar(); toast('已记录'); }
 
-let weekStartDate = null;
+function refreshToday(){ const t=todayStr(); const sk=schedule[t]||'休假'; const st=shifts[sk]||shifts['休假']; document.getElementById('todayBadge').textContent=st.name; document.getElementById('todayBadge').style.background=st.color; document.getElementById('todayShiftTime').textContent=st.times.length?st.times.join(' | '):'休息日'; document.getElementById('todayShiftSub').textContent=st.times.length?'今日班次':'好好享受～'; updateCountdown(); updateReminder(); updateRecentFinance(); updateTodayNotes(); }
 
-function refreshWeek(){ const t=new Date(); const dow=t.getDay(); const mon=new Date(t); mon.setDate(t.getDate()-(dow===0?6:dow-1) + weekOffset*7); weekStartDate=mon; const sun=new Date(mon); sun.setDate(mon.getDate()+6); document.getElementById('weekRange').textContent=`${mon.getMonth()+1}/${mon.getDate()} - ${sun.getMonth()+1}/${sun.getDate()}`; const row=document.getElementById('weekRow'); row.innerHTML=''; const days=['一','二','三','四','五','六','日']; const isToday=todayStr(); for(let i=0;i<7;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); const ds=fmtDate(d.getFullYear(),d.getMonth(),d.getDate()); const isT=ds===isToday; const sk=schedule[ds]||'休假'; const st=shifts[sk]||shifts['休假']; const div=document.createElement('div'); div.className='week-day'+(isT?' today':'')+(selWeekDay===ds?' selected':''); div.innerHTML=`<div class="day-name">${days[i]}</div><div class="day-num">${d.getDate()}</div><div class="day-dot" style="background:${st.color}"></div><div class="day-shift">${st.name}</div>`; div.addEventListener('click',()=>{selWeekDay=ds;refreshWeek();}); row.appendChild(div); } if(!selWeekDay||!isInWeek(selWeekDay, mon)) selWeekDay=isToday; renderWeekChips(); updateWeekInfo(); renderNotes(); }
+// ---------- 排班模块 ----------
 
 function isInWeek(ds, mon){ for(let i=0;i<7;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); if(fmtDate(d.getFullYear(),d.getMonth(),d.getDate())===ds) return true; } return false; }
-
-window.scrollWeek=function(dir){ weekOffset+=dir; refreshWeek(); const wrap=document.getElementById('weekWrap'); if(wrap) wrap.scrollLeft=0; };
 
 function updateWeekInfo(){ const sk=schedule[selWeekDay]||'休假'; const st=shifts[sk]||shifts['休假']; document.getElementById('weekSelectedInfo').textContent=`${selWeekDay} → ${st.name}${st.times.length?' · '+st.times.join(' | '):' · 休息'}`; document.querySelectorAll('#weekShiftSelector .shift-chip').forEach(c=>c.classList.toggle('active',c.dataset.key===sk)); }
 
 function renderWeekChips(){ const sel=document.getElementById('weekShiftSelector'); sel.innerHTML=''; for(const[k,v]of Object.entries(shifts)){ const c=document.createElement('span'); c.className='shift-chip'; c.textContent=v.name; c.dataset.key=k; c.style.borderLeft=`3px solid ${v.color}`; c.addEventListener('click',()=>{if(selWeekDay){schedule[selWeekDay]=k;save();refreshWeek();updateStatusBarShifts();toast(`已设置${v.name}`);}}); sel.appendChild(c); } const add=document.createElement('span'); add.className='shift-chip shift-chip-add'; add.textContent='+ 自定义'; add.addEventListener('click',openCustomShift); sel.appendChild(add); }
 
-window.applyWeekTemplate=function(){ const tpl=['A2','B2','治疗班','B1','A2','休假','休假']; const t=new Date(); const dow=t.getDay(); const mon=new Date(t); mon.setDate(t.getDate()-(dow===0?6:dow-1)); for(let i=0;i<7;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); schedule[fmtDate(d.getFullYear(),d.getMonth(),d.getDate())]=tpl[i]; } save(); refreshWeek(); updateStatusBarShifts(); toast('模板已应用'); };
+function refreshWeek(){ const t=new Date(); const dow=t.getDay(); const mon=new Date(t); mon.setDate(t.getDate()-(dow===0?6:dow-1) + weekOffset*7); const sun=new Date(mon); sun.setDate(mon.getDate()+6); document.getElementById('weekRange').textContent=`${mon.getMonth()+1}/${mon.getDate()} - ${sun.getMonth()+1}/${sun.getDate()}`; const row=document.getElementById('weekRow'); row.innerHTML=''; const days=['一','二','三','四','五','六','日']; const isToday=todayStr(); for(let i=0;i<7;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); const ds=fmtDate(d.getFullYear(),d.getMonth(),d.getDate()); const isT=ds===isToday; const sk=schedule[ds]||'休假'; const st=shifts[sk]||shifts['休假']; const div=document.createElement('div'); div.className='week-day'+(isT?' today':'')+(selWeekDay===ds?' selected':''); div.innerHTML=`<div class="day-name">${days[i]}</div><div class="day-num">${d.getDate()}</div><div class="day-dot" style="background:${st.color}"></div><div class="day-shift">${st.name}</div>`; div.addEventListener('click',()=>{selWeekDay=ds;refreshWeek();}); row.appendChild(div); } if(!selWeekDay||!isInWeek(selWeekDay, mon)) selWeekDay=isToday; renderWeekChips(); updateWeekInfo(); renderNotes(); }
+
+function scrollWeek(dir){ weekOffset+=dir; refreshWeek(); const wrap=document.getElementById('weekWrap'); if(wrap) wrap.scrollLeft=0; }
+
+function applyWeekTemplate(){ const tpl=['A2','B2','治疗班','B1','A2','休假','休假']; const t=new Date(); const dow=t.getDay(); const mon=new Date(t); mon.setDate(t.getDate()-(dow===0?6:dow-1)); for(let i=0;i<7;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); schedule[fmtDate(d.getFullYear(),d.getMonth(),d.getDate())]=tpl[i]; } save(); refreshWeek(); updateStatusBarShifts(); toast('模板已应用'); }
 
 function openCustomShift(){ const html=`<div style="margin-bottom:10px"><label style="font-size:12px;color:var(--text3);margin-bottom:4px;display:block">名称</label><input class="input" id="cName" style="width:100%"></div><div style="margin-bottom:10px"><label style="font-size:12px;color:var(--text3);margin-bottom:4px;display:block">时间段</label><input class="input" id="cTimes" placeholder="8:00-12:00,14:00-17:00" style="width:100%"></div><div style="margin-bottom:6px"><label style="font-size:12px;color:var(--text3);margin-bottom:4px;display:block">颜色</label><input type="color" class="input" id="cColor" value="#5ac8fa" style="width:100%;height:40px;padding:4px"></div>`; sheet('自定义排班', html, (ov,cl)=>{ const n=ov.querySelector('#cName').value.trim(); const t=ov.querySelector('#cTimes').value.trim(); const col=ov.querySelector('#cColor').value; if(!n){toast('请输入名称');return;} const times=t?t.split(',').map(s=>s.trim()).filter(s=>s):[]; const ns={name:n,times,color:col}; shifts[n]=ns; customShifts[n]=ns; if(selWeekDay) schedule[selWeekDay]=n; save();cl();refreshWeek();updateStatusBarShifts();toast('已添加'); }); }
 
-function renderNotes(){ const list=document.getElementById('notesList'); const all=[...notes].sort((a,b)=>b.date.localeCompare(a.date)); if(!all.length){ list.innerHTML='<div class="note-empty">暂无备注</div>'; return; } list.innerHTML=all.map(n=>`<div class="note-item${n.completed?' completed':''}"><span class="note-date-text">${n.date.slice(5)}</span><span class="note-text" onclick="toggleNote(${n.id})">${n.completed?'<del style="color:var(--text3)">'+n.text+'</del>':n.text}</span><button class="btn btn-small btn-danger" onclick="delNote(${n.id})" style="padding:2px 8px;flex-shrink:0">✕</button></div>`).join(''); }
+// ---------- 备注模块 ----------
 
-window.addNote=function(){ const date=document.getElementById('noteDate').value; const text=document.getElementById('noteText').value.trim(); if(!date||!text){toast('请填写日期和内容');return;} notes.push({id:noteIdCounter++,date,text,completed:false}); document.getElementById('noteText').value=''; save(); renderNotes(); if(curPage==='page-calendar') renderCalendar(); toast('备注已添加'); };
+function renderNotes(){ const list=document.getElementById('notesList'); const all=[...notes].sort((a,b)=>b.date.localeCompare(a.date)); if(!all.length){ list.innerHTML='<div class="note-empty">暂无备注</div>'; return; } list.innerHTML=all.map(n=>`<div class="note-item${n.completed?' completed':''}" data-noteid="${n.id}"><span class="note-date-text">${n.date.slice(5)}</span><span class="note-text">${n.completed?'<del style="color:var(--text3)">'+n.text+'</del>':n.text}</span><button class="btn btn-small btn-danger del-note" data-id="${n.id}" style="padding:2px 8px;flex-shrink:0">✕</button></div>`).join(''); document.querySelectorAll('#notesList .note-item').forEach(el=>{ el.querySelector('.note-text')?.addEventListener('click',()=>{ const id=parseInt(el.dataset.noteid); toggleNote(id); }); el.querySelector('.del-note')?.addEventListener('click',(e)=>{ e.stopPropagation(); const id=parseInt(e.currentTarget.dataset.id); delNote(id); }); }); }
 
-window.toggleNote=function(id){ const n=notes.find(x=>x.id===id); if(n){n.completed=!n.completed;save();renderNotes();if(curPage==='page-calendar') renderCalendar();} };
+function addNote(){ const date=document.getElementById('noteDate').value; const text=document.getElementById('noteText').value.trim(); if(!date||!text){toast('请填写日期和内容');return;} notes.push({id:noteIdCounter++,date,text,completed:false}); document.getElementById('noteText').value=''; save(); renderNotes(); if(curPage==='page-calendar') renderCalendar(); toast('备注已添加'); }
 
-window.delNote=function(id){ notes=notes.filter(n=>n.id!==id); save();renderNotes();if(curPage==='page-calendar') renderCalendar(); toast('备注已删除'); };
+function toggleNote(id){ const n=notes.find(x=>x.id===id); if(n){n.completed=!n.completed;save();renderNotes();if(curPage==='page-calendar') renderCalendar();} }
+
+function delNote(id){ notes=notes.filter(n=>n.id!==id); save();renderNotes();if(curPage==='page-calendar') renderCalendar(); toast('备注已删除'); }
+
+// ---------- 日历模块 ----------
 
 function renderCalendar(){ document.getElementById('calMonthLabel').textContent=`${calYear}年${calMonth+1}月`; const grid=document.getElementById('calGrid'); grid.innerHTML=''; ['日','一','二','三','四','五','六'].forEach(d=>{const h=document.createElement('div');h.className='calendar-hdr';h.textContent=d;grid.appendChild(h);}); const first=new Date(calYear,calMonth,1); const start=first.getDay(); const days=new Date(calYear,calMonth+1,0).getDate(); const prevDays=new Date(calYear,calMonth,0).getDate(); const t=todayStr(); for(let i=start-1;i>=0;i--){grid.appendChild(createCell(prevDays-i,true,t,false));} for(let d=1;d<=days;d++){grid.appendChild(createCell(d,false,t,false));} const total=Math.ceil((start+days)/7)*7; const rem=total-(start+days); for(let d=1;d<=rem;d++){grid.appendChild(createCell(d,true,t,true));} }
 
@@ -548,23 +536,107 @@ function showDayDetail(ds){ const sk=schedule[ds]||'休假'; const st=shifts[sk]
 
   html+=`<div class="detail-section"><div class="detail-label">💰 收支</div>`; if(!dayF.length) html+='<div style="font-size:12px;color:var(--text3);padding:4px 0">无记录</div>'; dayF.forEach(f=>{ const cls=f.type==='income'?'income':'expense'; html+=`<div class="finance-item"><span class="tag tag-${cls}">${f.type==='income'?'收入':'支出'}</span><span style="flex:1;font-size:12px;color:var(--text2)">${f.note||''}</span><span class="finance-amount ${cls}">${f.type==='income'?'+':'-'}¥${f.amount.toFixed(2)}</span><button class="btn btn-small btn-danger" data-delf2="${f.id}" style="padding:2px 6px">✕</button></div>`; }); html+=`<button class="btn btn-small btn-primary" id="addFinDay2" style="margin-top:4px">+ 记账</button></div>`;
 
-  html+=`<div class="detail-section"><div class="detail-label">📝 备注</div>`; if(!dayN.length) html+='<div style="font-size:12px;color:var(--text3);padding:4px 0">无</div>'; dayN.forEach(n=>{ html+=`<div class="note-item${n.completed?' completed':''}" style="cursor:pointer;margin-bottom:3px" onclick="toggleNote(${n.id})"><span class="note-text" style="font-size:12px">${n.completed?'<del style="color:var(--text3)">'+n.text+'</del>':n.text}</span></div>`; }); html+=`<button class="btn btn-small btn-primary" id="addNoteBtn2" style="margin-top:4px">+ 添加备注</button></div><button class="btn btn-danger" id="clearDayBtn2" style="width:100%;margin-top:6px">清空该日数据</button>`;
+  html+=`<div class="detail-section"><div class="detail-label">📝 备注</div>`; if(!dayN.length) html+='<div style="font-size:12px;color:var(--text3);padding:4px 0">无</div>'; dayN.forEach(n=>{ html+=`<div class="note-item${n.completed?' completed':''}" data-noteid="${n.id}" style="cursor:pointer;margin-bottom:3px"><span class="note-text" style="font-size:12px">${n.completed?'<del style="color:var(--text3)">'+n.text+'</del>':n.text}</span></div>`; }); html+=`<button class="btn btn-small btn-primary" id="addNoteBtn2" style="margin-top:4px">+ 添加备注</button></div><button class="btn btn-danger" id="clearDayBtn2" style="width:100%;margin-top:6px">清空该日数据</button>`;
 
-  sheetInfo(`${ds} 详情`, html); setTimeout(()=>{ const ov=document.getElementById('modalContainer').querySelector('.sheet-overlay'); if(!ov) return; ov.querySelector('#chgShiftBtn2')?.addEventListener('click',()=>{ov.remove();openShiftPicker(ds);}); ov.querySelector('#addFinDay2')?.addEventListener('click',()=>{ov.remove();openFinModal(ds);}); ov.querySelector('#addNoteBtn2')?.addEventListener('click',()=>{ ov.remove(); const noteText=prompt('输入备注：'); if(noteText&&noteText.trim()){ notes.push({id:noteIdCounter++,date:ds,text:noteText.trim(),completed:false}); save(); renderCalendar(); toast('备注已添加'); } }); ov.querySelector('#clearDayBtn2')?.addEventListener('click',()=>{ if(!confirm('清空该日所有数据？')) return; delete schedule[ds]; finance=finance.filter(f=>f.date!==ds); notes=notes.filter(n=>n.date!==ds); delete reminderLog[ds]; save(); ov.remove(); renderCalendar(); toast('已清空'); }); ov.querySelectorAll('[data-delf2]').forEach(b=>b.addEventListener('click',()=>{ finance=finance.filter(f=>f.id!==parseInt(b.dataset.delf2)); save(); ov.remove(); renderCalendar(); toast('已删除'); })); },80); }
+  sheetInfo(`${ds} 详情`, html); setTimeout(()=>{ const ov=document.getElementById('modalContainer').querySelector('.sheet-overlay'); if(!ov) return; ov.querySelector('#chgShiftBtn2')?.addEventListener('click',()=>{ov.remove();openShiftPicker(ds);}); ov.querySelector('#addFinDay2')?.addEventListener('click',()=>{ov.remove();openFinModal(ds);}); ov.querySelector('#addNoteBtn2')?.addEventListener('click',()=>{ ov.remove(); const noteText=prompt('输入备注：'); if(noteText&&noteText.trim()){ notes.push({id:noteIdCounter++,date:ds,text:noteText.trim(),completed:false}); save(); renderCalendar(); toast('备注已添加'); } }); ov.querySelector('#clearDayBtn2')?.addEventListener('click',()=>{ if(!confirm('清空该日所有数据？')) return; delete schedule[ds]; finance=finance.filter(f=>f.date!==ds); notes=notes.filter(n=>n.date!==ds); delete reminderLog[ds]; save(); ov.remove(); renderCalendar(); toast('已清空'); }); ov.querySelectorAll('[data-delf2]').forEach(b=>b.addEventListener('click',()=>{ finance=finance.filter(f=>f.id!==parseInt(b.dataset.delf2)); save(); ov.remove(); renderCalendar(); toast('已删除'); })); ov.querySelectorAll('.note-item').forEach(item=>{ item.addEventListener('click',()=>{ const id=parseInt(item.dataset.noteid); toggleNote(id); ov.remove(); renderCalendar(); }); }); },80); }
 
 function openShiftPicker(ds){ let h='<div style="display:flex;flex-wrap:wrap;gap:6px;">'; for(const[k,v]of Object.entries(shifts)) h+=`<span class="shift-chip" data-sk="${k}" style="border-left:3px solid ${v.color}">${v.name}</span>`; h+='</div>'; sheet(`设置排班 ${ds}`, h, ()=>{}); setTimeout(()=>{ const ov=document.getElementById('modalContainer').querySelector('.sheet-overlay'); if(ov) ov.querySelectorAll('.shift-chip').forEach(c=>c.addEventListener('click',()=>{ schedule[ds]=c.dataset.sk;save();renderCalendar();ov.remove();toast('已设置'); })); },80); }
 
 function openFinModal(ds){ const html=`<div style="display:flex;gap:8px;margin-bottom:10px"><select class="input" id="fmType" style="flex:1"><option value="income">收入</option><option value="expense">支出</option></select><input class="input" type="number" id="fmAmt" placeholder="金额" style="flex:2"></div><div><input class="input" id="fmNote" placeholder="备注" style="width:100%"></div>`; sheet(`记账 ${ds}`, html, (ov,cl)=>{ const t=ov.querySelector('#fmType').value; const a=parseFloat(ov.querySelector('#fmAmt').value); const n=ov.querySelector('#fmNote').value.trim(); if(isNaN(a)||a<=0){toast('金额无效');return;} finance.push({id:finIdCounter++,date:ds,type:t,amount:a,note:n||'无备注'}); save();cl();renderCalendar();toast('已添加'); }); }
 
-window.changeMonth=function(d){ calMonth+=d; if(calMonth>11){calMonth=0;calYear++;} if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); };
+function changeMonth(d){ calMonth+=d; if(calMonth>11){calMonth=0;calYear++;} if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); }
 
-window.queryStats=function(){ const from=document.getElementById('statsFrom').value; const to=document.getElementById('statsTo').value; if(!from||!to){toast('请选择日期');return;} const f=finance.filter(x=>x.date>=from&&x.date<=to); let inc=0,exp=0; f.forEach(x=>{if(x.type==='income')inc+=x.amount;else exp+=x.amount;}); document.getElementById('statsIncome').textContent='¥'+inc.toFixed(2); document.getElementById('statsExpense').textContent='¥'+exp.toFixed(2); document.getElementById('statsBalance').textContent='¥'+(inc-exp).toFixed(2); const list=document.getElementById('statsList'); list.innerHTML=!f.length?'<div class="empty-state">无记录</div>':f.sort((a,b)=>b.date.localeCompare(a.date)).map(x=>{ const cls=x.type==='income'?'income':'expense'; return `<div class="finance-item"><span style="font-size:10px;color:var(--text3)">${x.date}</span><span class="tag tag-${cls}">${x.type==='income'?'收':'支'}</span><span style="flex:1;font-size:12px">${x.note||''}</span><span class="finance-amount ${cls}">${x.type==='income'?'+':'-'}¥${x.amount.toFixed(2)}</span></div>`; }).join(''); };
+function queryStats(){ const from=document.getElementById('statsFrom').value; const to=document.getElementById('statsTo').value; if(!from||!to){toast('请选择日期');return;} const f=finance.filter(x=>x.date>=from&&x.date<=to); let inc=0,exp=0; f.forEach(x=>{if(x.type==='income')inc+=x.amount;else exp+=x.amount;}); document.getElementById('statsIncome').textContent='¥'+inc.toFixed(2); document.getElementById('statsExpense').textContent='¥'+exp.toFixed(2); document.getElementById('statsBalance').textContent='¥'+(inc-exp).toFixed(2); const list=document.getElementById('statsList'); list.innerHTML=!f.length?'<div class="empty-state">无记录</div>':f.sort((a,b)=>b.date.localeCompare(a.date)).map(x=>{ const cls=x.type==='income'?'income':'expense'; return `<div class="finance-item"><span style="font-size:10px;color:var(--text3)">${x.date}</span><span class="tag tag-${cls}">${x.type==='income'?'收':'支'}</span><span style="flex:1;font-size:12px">${x.note||''}</span><span class="finance-amount ${cls}">${x.type==='income'?'+':'-'}¥${x.amount.toFixed(2)}</span></div>`; }).join(''); }
+
+// ---------- 状态栏 ----------
 
 function updateStatusBarShifts(){ const pills=document.getElementById('statusPills'); if(!pills) return; const nowDate=new Date(); const dow=nowDate.getDay(); const mon=new Date(nowDate); mon.setDate(nowDate.getDate()-(dow===0?6:dow-1)); const curMin=nowDate.getHours()*60+nowDate.getMinutes(); const todayStrVal=todayStr(); let html=''; const dayNames=['日','一','二','三','四','五','六']; for(let i=0;i<7;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); const ds=fmtDate(d.getFullYear(),d.getMonth(),d.getDate()); const sk=schedule[ds]; if(!sk||sk==='休假') continue; const st=shifts[sk]; if(!st||!st.times||!st.times.length) continue; let allEnded=false; if(ds===todayStrVal){ const ranges=getRanges(sk); allEnded=ranges.every(r=>{ let endMin=r.endMin; if(r.overnight && endMin>1440) endMin-=1440; return curMin>=endMin; }); } else if(ds<todayStrVal){ allEnded=true; } const endedClass=allEnded?' ended':''; html+=`<span class="status-pill${endedClass}" style="color:${st.color};border-color:${st.color}40;background:${st.color}10">${dayNames[i]} ${st.name}</span>`; } if(!html) html='<span style="font-size:10px;color:var(--text3)">本周无排班</span>'; pills.innerHTML=html; }
 
+// ---------- 启动定时器 ----------
+
 function startTimers(){ if(countdownTimer) clearInterval(countdownTimer); countdownTimer=setInterval(()=>{ if(curPage==='page-today') updateCountdown(); updateStatusBarShifts(); },1000); }
 
-load(); const t=todayStr(); selDate=t; selWeekDay=t; document.getElementById('statsFrom').value=t; document.getElementById('statsTo').value=t; document.getElementById('noteDate').value=t; getReminder(); refreshToday(); refreshWeek(); renderCalendar(); updateStatusBarShifts(); startTimers(); switchTab('page-today');
+// ---------- 全局挂载必要函数 (供动态生成的 onclick 使用) ----------
+
+window.toggleNote = toggleNote;
+
+window.delNote = delNote;
+
+window.refreshReminder = refreshReminder;
+
+window.copyReminder = copyReminder;
+
+window.addTodayNote = addTodayNote;
+
+window.toggleTodayNote = toggleTodayNote;
+
+window.delTodayNote = delTodayNote;
+
+window.addQuickFinance = addQuickFinance;
+
+window.switchTab = switchTab;
+
+window.scrollWeek = scrollWeek;
+
+window.applyWeekTemplate = applyWeekTemplate;
+
+window.addNote = addNote;
+
+window.changeMonth = changeMonth;
+
+window.queryStats = queryStats;
+
+// ---------- 事件绑定 (用 addEventListener 替代内联 onclick) ----------
+
+document.getElementById('refreshReminderBtn')?.addEventListener('click', refreshReminder);
+
+document.getElementById('copyReminderBtn')?.addEventListener('click', copyReminder);
+
+document.getElementById('addTodayNoteBtn')?.addEventListener('click', addTodayNote);
+
+document.getElementById('gotoCalendarBtn')?.addEventListener('click', ()=>switchTab('page-calendar'));
+
+document.getElementById('quickFinanceBtn')?.addEventListener('click', addQuickFinance);
+
+document.getElementById('prevWeekBtn')?.addEventListener('click', ()=>scrollWeek(-1));
+
+document.getElementById('nextWeekBtn')?.addEventListener('click', ()=>scrollWeek(1));
+
+document.getElementById('applyTemplateBtn')?.addEventListener('click', applyWeekTemplate);
+
+document.getElementById('addNoteBtn')?.addEventListener('click', addNote);
+
+document.getElementById('prevMonthBtn')?.addEventListener('click', ()=>changeMonth(-1));
+
+document.getElementById('nextMonthBtn')?.addEventListener('click', ()=>changeMonth(1));
+
+document.getElementById('queryStatsBtn')?.addEventListener('click', queryStats);
+
+document.querySelectorAll('.tab-item').forEach(el=>{ el.addEventListener('click',()=>switchTab(el.dataset.tab)); });
+
+// ---------- 初始化 ----------
+
+load();
+
+const t=todayStr();
+
+selDate=t; selWeekDay=t;
+
+document.getElementById('statsFrom').value=t;
+
+document.getElementById('statsTo').value=t;
+
+document.getElementById('noteDate').value=t;
+
+getReminder();
+
+refreshToday(); refreshWeek(); renderCalendar();
+
+updateStatusBarShifts();
+
+startTimers();
+
+switchTab('page-today');
 
 })();
 
