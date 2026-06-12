@@ -30,6 +30,7 @@
     background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
     display: flex; justify-content: center; align-items: center;
     min-height: 100dvh; font-family: -apple-system, "SF Pro Text", "PingFang SC", Helvetica, sans-serif;
+    transition: background-image 0.2s;
   }
   .app { width:100%; max-width:430px; height:100dvh; background:transparent; display:flex; flex-direction:column; }
   .main { flex:1; overflow-y:auto; padding:12px 12px 20px; scroll-behavior:smooth; }
@@ -95,7 +96,7 @@
   .stat-table th, .stat-table td { padding:6px 4px; text-align:left; border-bottom:1px solid rgba(0,0,0,0.05); }
   .stat-summary { margin-top:8px; font-weight:600; color:var(--text2); font-size:12px; }
 
-  /* 新床位网格布局 6x8 */
+  /* 床位网格 */
   .bed-grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -134,7 +135,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  /* 放大效果 */
   .bed-card.expanded {
     transform: scale(1.33);
     z-index: 10;
@@ -149,12 +149,10 @@
   .bed-card.expanded .bed-note-preview {
     display: block;
   }
-  /* 其他卡片收缩 */
   .bed-card.shrink {
     transform: scale(0.95);
     opacity: 0.85;
   }
-  /* 筛选半透明 */
   .bed-grid.filter-occupied .bed-card:not(.occupied) { opacity: 0.4; }
   .bed-grid.filter-empty .bed-card.occupied { opacity: 0.4; }
   .bed-card.highlight {
@@ -229,7 +227,7 @@
 <body>
 <div class="app">
   <div class="main" id="mainContent">
-    <!-- 今日页面 (完整保留) -->
+    <!-- 今日页面 -->
     <div class="page" id="page-today">
       <div class="card" style="background: linear-gradient(135deg, #ffdde1, #ee9ca7); color: white; backdrop-filter: none;">
         <div class="flex-row" style="justify-content: space-between; align-items: baseline;">
@@ -268,7 +266,7 @@
       </div>
     </div>
 
-    <!-- 排班页面 (完整保留) -->
+    <!-- 排班页面 -->
     <div class="page" id="page-week">
       <div class="card">
         <div class="card-title">
@@ -296,7 +294,7 @@
       </div>
     </div>
 
-    <!-- 日历页面 (完整保留) -->
+    <!-- 日历页面（设置按钮将出现在此卡片的底部操作栏） -->
     <div class="page" id="page-calendar">
       <div class="card">
         <div class="today-tomorrow" id="todayTomorrowInfo"><span>今日班次: --</span><span>明日班次: --</span></div>
@@ -306,14 +304,15 @@
           <button class="btn btn-small btn-outline" id="nextMonthBtn">›</button>
         </div>
         <div class="calendar-grid" id="calendarGrid"></div>
-        <div class="bottom-actions">
+        <div class="bottom-actions" id="calendarBottomActions">
           <button class="btn btn-small" id="gotoTodayBtn">今天</button>
           <button class="btn btn-small btn-outline" id="manualShiftBtn">手动排班</button>
+          <!-- 设置按钮会由脚本动态添加到此处，保证不污染原始HTML结构 -->
         </div>
       </div>
     </div>
 
-    <!-- 统计页面 (完整保留) -->
+    <!-- 统计页面 -->
     <div class="page" id="page-stats">
       <div class="card">
         <div class="card-title">📊 区间统计</div>
@@ -340,14 +339,13 @@
       </div>
     </div>
 
-    <!-- 全新床位页面 6x8 网格 -->
+    <!-- 床位页面 -->
     <div class="page" id="page-beds">
       <div class="card" style="padding-bottom: 12px;">
         <div class="card-title">🛏️ 病房平面图 
           <div><button class="btn btn-small btn-outline" id="addBedBtn">+ 添加床位</button>
           <button class="btn btn-small btn-outline" id="editBedNumberBtn">✏️ 改床号</button></div>
         </div>
-        <!-- 搜索与筛选栏 -->
         <div class="bed-toolbar">
           <input type="text" id="bedSearchInput" class="input" placeholder="🔍 输入床号跳转" style="margin-bottom:0;">
           <div class="filter-btns">
@@ -357,7 +355,6 @@
           </div>
         </div>
         <div id="bedsList" class="bed-grid"></div>
-        <!-- 底部信息交互栏 -->
         <div class="bed-note-area">
           <div id="selectedBedInfo" class="bed-info-bar">未选择床位</div>
           <textarea id="bedNoteInput" rows="2" placeholder="点击床位后，可在此编辑备注信息..."></textarea>
@@ -370,7 +367,7 @@
       </div>
     </div>
 
-    <!-- 交接班页面 (完整保留) -->
+    <!-- 交接班页面 -->
     <div class="page" id="page-handover">
       <div class="card">
         <div class="card-title">📋 交接班记录 <button class="btn btn-small btn-outline" id="clearHandoverBtn">清空</button></div>
@@ -395,7 +392,7 @@
 
 <script>
 (function(){
-  // ---------- 数据定义 (与之前完全兼容) ----------
+  // ---------- 数据定义 (与原完全兼容) ----------
   const STORAGE_KEY = 'schedule_pro_v9';
   const DEFAULT_SHIFTS = {
     'A2': { name:'A2', times:['8:00-11:00','12:00-16:00'], color:'#ff8c8c', short:'A2', startTime:'8:00' },
@@ -418,7 +415,7 @@
   let beds = [];
   let handoverText = "";
   let selectedBedId = null;
-  let currentFilter = "all";   // all, occupied, empty
+  let currentFilter = "all";
   let curPage = 'page-today';
   let selDate = null;
   let selWeekDay = null;
@@ -459,8 +456,7 @@
     }
   };
 
-  // ---------- 原有功能函数 (保持不变) ----------
-  // 祝福语相关
+  // ---------- 原有功能函数 (保持原样) ----------
   const appearance = ['笑容','眼睛','睫毛','眉眼','脸庞','气质','秀发','穿搭','肌肤','神采'];
   const clothing = ['裙子','衬衫','外套','配饰','风格','衣着','造型','妆容'];
   const figure = ['身材','身姿','体态','曲线','轮廓','气质'];
@@ -494,7 +490,6 @@
   function refreshReminder() { const t=todayStr(); let ns; do{ ns=generateRandomBlessing(); }while(ns===reminderLog[t]); reminderLog[t]=ns; save(); updateReminder(); toast('已换一句'); }
   function copyReminder() { const t=document.getElementById('reminderText').innerText; navigator.clipboard.writeText(t).then(()=>toast('已复制')).catch(()=>toast('复制失败')); }
 
-  // 倒计时等 (简化但保留)
   const getRanges = (key) => {
     const st = shifts[key];
     if (!st || !st.times.length) return [];
@@ -546,7 +541,7 @@
       cdLabel.innerText = inWork ? '下班倒计时' : '上班倒计时';
     } else cdNum.innerText = '--:--';
   }
-  function updateTodayStatic() { /* 完整保留，代码略长但原有逻辑不变，此处简略但确保运行时功能 */ 
+  function updateTodayStatic() {
     const today = todayStr();
     const shiftKey = schedule[today] || '休假';
     const shift = shifts[shiftKey] || shifts['休假'];
@@ -585,7 +580,6 @@
   function addTodayNote(){ const text=document.getElementById('todayNoteText').value.trim(); if(!text) return toast('请输入内容'); notes.push({ id:Date.now(), date:todayStr(), text, completed:false }); document.getElementById('todayNoteText').value=''; save(); updateTodayStatic(); renderCalendar(); renderNotesList(); toast('已添加'); }
   function addQuickFinance(){ const amt=parseFloat(document.getElementById('quickAmount').value); const type=document.getElementById('quickType').value; if(isNaN(amt)||amt<=0) return toast('金额无效'); finance.push({ id:Date.now(), date:todayStr(), type, amount:amt, note:'快速记账' }); document.getElementById('quickAmount').value=''; save(); updateTodayStatic(); renderCalendar(); toast('已记录'); }
 
-  // 周视图函数 (完整保留，避免缺失)
   function getMonday(offset=0) { const d=new Date(); const day=d.getDay(); const mon=new Date(d); mon.setDate(d.getDate() - (day===0?6:day-1) + offset*7); return mon; }
   function renderWeek() {
     const mon=getMonday(weekOffset); const weekDays=[]; for(let i=0;i<7;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); weekDays.push(d); }
@@ -723,7 +717,7 @@
   function copyHandover() { const text = document.getElementById('handoverContent').value; if (!text) { toast('无内容可复制'); return; } navigator.clipboard.writeText(text).then(()=>toast('已复制全部')).catch(()=>toast('复制失败')); }
   function updateHandoverUI() { const ha = document.getElementById('handoverContent'); if (ha) ha.value = handoverText; }
 
-  // ---------- 新床位核心功能 ----------
+  // 床位核心功能
   function renderBeds() {
     const container = document.getElementById('bedsList');
     if (!container) return;
@@ -731,12 +725,6 @@
       container.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:var(--text3);">暂无床位，点击上方添加</div>';
       return;
     }
-    // 根据筛选条件过滤
-    let filteredBeds = [...beds];
-    if (currentFilter === 'occupied') filteredBeds = beds.filter(b => !!b.patientName);
-    else if (currentFilter === 'empty') filteredBeds = beds.filter(b => !b.patientName);
-    // 但为了保持网格完整48格，我们需要按原有顺序并设置可见性？为了布局整齐，我们不应改变网格数量，而是通过CSS隐藏/透明？要求非目标半透明，因此所有床位均渲染，通过类控制透明度。
-    // 不使用filteredBeds进行DOM渲染，而是全部渲染，通过类控制透明度。
     container.innerHTML = beds.map(bed => {
       const occupied = !!bed.patientName;
       let additionalClass = '';
@@ -746,7 +734,6 @@
                 <div class="bed-note-preview">${escapeHtml(bed.notes?.substring(0, 12) || '')}</div>
               </div>`;
     }).join('');
-    // 绑定点击事件
     document.querySelectorAll('.bed-card').forEach(card => {
       card.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -754,41 +741,32 @@
         selectBed(id);
       });
     });
-    // 如果当前有选中的床位，更新底部区域并高亮放大
     if (selectedBedId) {
       const bedCard = document.querySelector(`.bed-card[data-id="${selectedBedId}"]`);
       if (bedCard) {
-        // 移除所有 expanded/shrink 类
         document.querySelectorAll('.bed-card').forEach(c => { c.classList.remove('expanded', 'shrink'); });
         bedCard.classList.add('expanded');
         const otherCards = document.querySelectorAll(`.bed-card:not([data-id="${selectedBedId}"])`);
         otherCards.forEach(c => c.classList.add('shrink'));
-        // 滚动到视图
         bedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else {
         selectedBedId = null;
         updateBottomInfo();
       }
     } else {
-      // 清空所有放大/收缩效果
       document.querySelectorAll('.bed-card').forEach(c => { c.classList.remove('expanded', 'shrink'); });
     }
     updateBottomInfo();
   }
-
   function selectBed(bedId) {
     const bed = beds.find(b => b.id === bedId);
     if (!bed) return;
     selectedBedId = bedId;
-    // 重新渲染网格以更新放大/收缩效果
     renderBeds();
-    // 更新底部信息栏
     updateBottomInfo();
-    // 额外滚动保证可见
     const card = document.querySelector(`.bed-card[data-id="${bedId}"]`);
     if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
-
   function updateBottomInfo() {
     const infoDiv = document.getElementById('selectedBedInfo');
     const textarea = document.getElementById('bedNoteInput');
@@ -806,18 +784,16 @@
       textarea.value = '';
     }
   }
-
   function saveBedNote() {
     if (!selectedBedId) { toast('请先点击床位'); return; }
     const bed = beds.find(b => b.id === selectedBedId);
     if (bed) {
       bed.notes = document.getElementById('bedNoteInput').value;
       save();
-      renderBeds();  // 刷新网格以显示预览
+      renderBeds();
       toast('备注已保存');
     }
   }
-
   function handoverCurrentBed() {
     if (!selectedBedId) { toast('请先点击床位'); return; }
     const bed = beds.find(b => b.id === selectedBedId);
@@ -829,7 +805,6 @@
       addToHandover(handoverStr);
     }
   }
-
   function editPatient() {
     if (!selectedBedId) { toast('请先点击床位'); return; }
     const bed = beds.find(b => b.id === selectedBedId);
@@ -855,7 +830,6 @@
       toast('病人信息已更新');
     }
   }
-
   function addBed() {
     const number = prompt('请输入床位号（例如 101）');
     if (!number) return;
@@ -868,7 +842,6 @@
     renderBeds();
     toast('已添加床位');
   }
-
   function editBedNumber() {
     if (!selectedBedId) { toast('请先点击要修改的床位'); return; }
     const bed = beds.find(b => b.id === selectedBedId);
@@ -885,20 +858,17 @@
       toast('床位号已修改');
     }
   }
-
   function setFilter(filter) {
     currentFilter = filter;
     const grid = document.getElementById('bedsList');
     grid.classList.remove('filter-occupied', 'filter-empty');
     if (filter === 'occupied') grid.classList.add('filter-occupied');
     else if (filter === 'empty') grid.classList.add('filter-empty');
-    renderBeds(); // 重新应用放大效果
+    renderBeds();
   }
-
   function searchBed() {
     const searchVal = document.getElementById('bedSearchInput').value.trim();
     if (!searchVal) {
-      // 清除高亮
       document.querySelectorAll('.bed-card').forEach(c => c.classList.remove('highlight'));
       return;
     }
@@ -915,7 +885,6 @@
     }
   }
 
-  // 切换页面时渲染床位
   function switchTab(pageId) {
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
@@ -932,15 +901,10 @@
       if (!document.getElementById('shiftStatTo').value) document.getElementById('shiftStatTo').value = todayStr();
       queryStats(); queryShiftStats();
     }
-    else if (pageId === 'page-beds') { 
-      renderBeds();
-      if (selectedBedId) updateBottomInfo(); 
-    }
+    else if (pageId === 'page-beds') { renderBeds(); if (selectedBedId) updateBottomInfo(); }
     else if (pageId === 'page-handover') updateHandoverUI();
   }
-
   function updateTodayUI() { updateTodayStatic(); updateCountdownOnly(); }
-
   const escapeHtml = (str) => String(str).replace(/[&<>]/g, function(m) {
     if (m === '&') return '&amp;';
     if (m === '<') return '&lt;';
@@ -985,6 +949,207 @@
   updateReminder(); updateTodayUI(); renderWeek(); renderCalendar(); renderNotesList(); renderBeds(); updateHandoverUI();
   setInterval(() => { if (curPage === 'page-today') updateCountdownOnly(); }, 1000);
   switchTab('page-today');
+})();
+
+// ========== 设置模块（仅创建弹窗，按钮固定在日历页面底部） ==========
+(function() {
+  const SETTINGS_PREFIX = 'AppSettings_';
+  const FONT_KEY = SETTINGS_PREFIX + 'fontSize';
+  const WALLPAPER_KEY = SETTINGS_PREFIX + 'wallpaper';
+
+  const showToast = (msg) => {
+    let container = document.getElementById('toastContainer');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'toastContainer';
+      document.body.appendChild(container);
+    }
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.innerText = msg;
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 2000);
+  };
+
+  function setFontSize(level) {
+    let baseSize = '16px';
+    if (level === 'small') baseSize = '14px';
+    else if (level === 'medium') baseSize = '16px';
+    else if (level === 'large') baseSize = '18px';
+    document.body.style.fontSize = baseSize;
+    localStorage.setItem(FONT_KEY, level);
+  }
+  function loadFontSize() {
+    const saved = localStorage.getItem(FONT_KEY);
+    if (saved && ['small','medium','large'].includes(saved)) {
+      setFontSize(saved);
+      const select = document.getElementById('fontSizeSelect');
+      if (select) select.value = saved;
+    } else {
+      setFontSize('medium');
+      if (document.getElementById('fontSizeSelect')) document.getElementById('fontSizeSelect').value = 'medium';
+    }
+  }
+
+  function setWallpaper(dataUrl) {
+    if (dataUrl) {
+      document.body.style.backgroundImage = `url(${dataUrl})`;
+      document.body.style.backgroundSize = 'cover';
+      document.body.style.backgroundPosition = 'center';
+      document.body.style.backgroundAttachment = 'fixed';
+      localStorage.setItem(WALLPAPER_KEY, dataUrl);
+    } else {
+      document.body.style.backgroundImage = '';
+      document.body.style.backgroundSize = '';
+      document.body.style.backgroundPosition = '';
+      document.body.style.backgroundAttachment = '';
+      localStorage.removeItem(WALLPAPER_KEY);
+    }
+  }
+  function loadWallpaper() {
+    const saved = localStorage.getItem(WALLPAPER_KEY);
+    if (saved) setWallpaper(saved);
+  }
+  function resetWallpaper() {
+    setWallpaper(null);
+    const upload = document.getElementById('wallpaperUpload');
+    if (upload) upload.value = '';
+    showToast('已恢复默认背景');
+  }
+
+  function exportAllData() {
+    const allData = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      allData[key] = localStorage.getItem(key);
+    }
+    const dataStr = JSON.stringify(allData, null, 2);
+    const blob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `backup_${new Date().toISOString().slice(0,19)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('已导出全部数据');
+  }
+  function importAllData(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const imported = JSON.parse(e.target.result);
+        if (confirm('⚠️ 导入会覆盖当前所有同名数据（包括排班、床位等）。未包含的数据不会丢失。确定继续吗？')) {
+          for (const [key, value] of Object.entries(imported)) {
+            localStorage.setItem(key, value);
+          }
+          showToast('导入成功，页面即将刷新');
+          setTimeout(() => location.reload(), 1500);
+        }
+      } catch(err) {
+        alert('文件解析失败，请确保选择正确的 JSON 备份文件');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // 创建弹窗（不创建右下角按钮）
+  function createSettingsModal() {
+    const modal = document.createElement('div');
+    modal.id = 'settingsModal';
+    modal.style.cssText = `
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+      z-index: 10001; justify-content: center; align-items: center;
+    `;
+    modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+    const modalContent = document.createElement('div');
+    modalContent.style.cssText = `
+      background: rgba(255,255,255,0.96); backdrop-filter: blur(20px);
+      border-radius: 32px; width: 300px; max-width: 85%;
+      padding: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.6);
+    `;
+    modalContent.innerHTML = `
+      <h3 style="margin:0 0 16px 0; font-size:18px; color:var(--primary-dark); text-align:center;">⚙️ 设置</h3>
+      <div style="margin-bottom: 20px;">
+        <label style="display:block; font-size:13px; font-weight:600; margin-bottom:6px;">🔤 字体大小</label>
+        <select id="fontSizeSelect" style="width:100%; padding:8px; border-radius:40px; border:1px solid var(--border); background:white; font-size:14px;">
+          <option value="small">小</option>
+          <option value="medium" selected>中</option>
+          <option value="large">大</option>
+        </select>
+      </div>
+      <div style="margin-bottom: 20px;">
+        <label style="display:block; font-size:13px; font-weight:600; margin-bottom:6px;">🖼️ 自定义壁纸</label>
+        <input type="file" id="wallpaperUpload" accept="image/*" style="margin-bottom:8px; font-size:12px;">
+        <button id="resetWallpaperBtn" class="btn-small btn-outline" style="width:100%;">重置为渐变背景</button>
+      </div>
+      <div style="margin-bottom: 20px;">
+        <label style="display:block; font-size:13px; font-weight:600; margin-bottom:6px;">💾 数据安全</label>
+        <div style="display:flex; gap:10px;">
+          <button id="exportDataBtn" class="btn-small btn-outline" style="flex:1;">导出备份</button>
+          <button id="importDataBtn" class="btn-small btn-outline" style="flex:1;">导入恢复</button>
+        </div>
+        <input type="file" id="importFileInput" accept=".json" style="display:none;">
+        <p style="font-size:10px; color:var(--text3); margin-top:8px;">导入后会刷新页面，请先导出备份</p>
+      </div>
+      <button id="closeModalBtn" class="btn" style="width:100%; margin-top:6px;">关 闭</button>
+    `;
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+
+    // 绑定事件
+    document.getElementById('fontSizeSelect').onchange = (e) => setFontSize(e.target.value);
+    document.getElementById('wallpaperUpload').onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => setWallpaper(ev.target.result);
+        reader.readAsDataURL(file);
+        showToast('壁纸已应用');
+      }
+    };
+    document.getElementById('resetWallpaperBtn').onclick = resetWallpaper;
+    document.getElementById('exportDataBtn').onclick = exportAllData;
+    document.getElementById('importDataBtn').onclick = () => document.getElementById('importFileInput').click();
+    document.getElementById('importFileInput').onchange = (e) => {
+      if (e.target.files[0]) importAllData(e.target.files[0]);
+      e.target.value = '';
+    };
+    document.getElementById('closeModalBtn').onclick = () => modal.style.display = 'none';
+    return modal;
+  }
+
+  // 在日历页面底部操作栏添加设置按钮
+  function addSettingsButtonToCalendar() {
+    const bottomActions = document.getElementById('calendarBottomActions');
+    if (!bottomActions) return;
+    // 避免重复添加
+    if (bottomActions.querySelector('.settings-calendar-btn')) return;
+    const settingsBtn = document.createElement('button');
+    settingsBtn.className = 'btn btn-small btn-outline settings-calendar-btn';
+    settingsBtn.innerHTML = '⚙️ 设置';
+    settingsBtn.onclick = () => {
+      const modal = document.getElementById('settingsModal');
+      if (modal) modal.style.display = 'flex';
+    };
+    bottomActions.appendChild(settingsBtn);
+  }
+
+  // 初始化：创建弹窗，添加按钮，加载设置
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      createSettingsModal();
+      addSettingsButtonToCalendar();
+      loadFontSize();
+      loadWallpaper();
+    });
+  } else {
+    createSettingsModal();
+    addSettingsButtonToCalendar();
+    loadFontSize();
+    loadWallpaper();
+  }
 })();
 </script>
 </body>
