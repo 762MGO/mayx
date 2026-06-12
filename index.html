@@ -8,14 +8,14 @@
   :root {
     --bg-gradient-start: #fff0f5;
     --bg-gradient-end: #e0f7fa;
-    --card-bg: rgba(255, 255, 255, 0.85);
-    --card-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    --card-bg: rgba(255, 255, 255, 0.75);  /* 动态由JS修改，默认0.75 */
+    --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
     --primary: #ff8c8c;
     --primary-dark: #e06c6c;
-    --text: #4a4a4a;
-    --text2: #6a6a6a;
-    --text3: #8a8e93;
-    --border: rgba(0,0,0,0.08);
+    --text: #2c3e2f;
+    --text2: #4a5a4a;
+    --text3: #6a7a6a;
+    --border: rgba(0,0,0,0.1);
     --red: #f26b6b;
     --green: #5cb85c;
     --blue: #5bc0de;
@@ -31,12 +31,14 @@
     display: flex; justify-content: center; align-items: center;
     min-height: 100dvh; font-family: -apple-system, "SF Pro Text", "PingFang SC", Helvetica, sans-serif;
     transition: background-image 0.2s;
+    font-size: 16px;  /* 默认中号字体 */
   }
   .app { width:100%; max-width:430px; height:100dvh; background:transparent; display:flex; flex-direction:column; }
   .main { flex:1; overflow-y:auto; padding:12px 12px 20px; scroll-behavior:smooth; }
   .card {
     background: var(--card-bg); backdrop-filter: blur(10px); border-radius:24px;
     padding:14px 16px; margin-bottom:12px; box-shadow:var(--card-shadow); border:1px solid rgba(255,255,255,0.6);
+    transition: background 0.1s ease;
   }
   .card-title { font-size:15px; font-weight:700; color:var(--primary-dark); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
   .btn {
@@ -65,15 +67,16 @@
   }
   .shift-chip.active { background:var(--primary); color:white; border-color:var(--primary); }
   .tab-bar {
-    display:flex; justify-content:space-around; background:rgba(255,255,255,0.8); backdrop-filter:blur(20px);
+    display:flex; justify-content:space-around; background:var(--card-bg); backdrop-filter:blur(20px);
     border-top:1px solid rgba(0,0,0,0.05); padding:6px 8px calc(6px + var(--safe-bottom));
+    transition: background 0.1s ease;
   }
   .tab-item { padding:6px 10px; border-radius:40px; font-size:12px; font-weight:600; color:var(--text3); cursor:pointer; transition:0.1s; text-align:center; }
   .tab-item.active { background:var(--primary); color:white; box-shadow:0 2px 6px rgba(255,140,140,0.3); }
   .page { display:none; }
   .page.active { display:block; }
   .countdown-num { font-size:30px; font-family:monospace; font-weight:700; letter-spacing:2px; color:var(--primary-dark); }
-  .reminder-text { font-size:13px; line-height:1.4; color:var(--text); background:rgba(255,255,255,0.5); padding:8px; border-radius:20px; }
+  .reminder-text { font-size:13px; line-height:1.4; color:var(--text); background:rgba(255,255,255,0.6); padding:8px; border-radius:20px; }
   .note-item { display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid rgba(0,0,0,0.05); }
   .finance-item { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(0,0,0,0.05); color:var(--text2); font-size:12px; }
   .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.75); color:white; padding:6px 16px; border-radius:40px; font-size:12px; z-index:1000; pointer-events:none; }
@@ -177,11 +180,12 @@
     padding: 4px 10px;
   }
   .bed-note-area {
-    background: rgba(255,255,255,0.9);
+    background: var(--card-bg);
     border-radius: 20px;
     padding: 12px;
     backdrop-filter: blur(4px);
     margin-top: 8px;
+    transition: background 0.1s ease;
   }
   .bed-note-area textarea {
     width: 100%;
@@ -294,7 +298,7 @@
       </div>
     </div>
 
-    <!-- 日历页面（设置按钮将出现在此卡片的底部操作栏） -->
+    <!-- 日历页面（设置按钮出现在底部） -->
     <div class="page" id="page-calendar">
       <div class="card">
         <div class="today-tomorrow" id="todayTomorrowInfo"><span>今日班次: --</span><span>明日班次: --</span></div>
@@ -307,7 +311,7 @@
         <div class="bottom-actions" id="calendarBottomActions">
           <button class="btn btn-small" id="gotoTodayBtn">今天</button>
           <button class="btn btn-small btn-outline" id="manualShiftBtn">手动排班</button>
-          <!-- 设置按钮会由脚本动态添加到此处，保证不污染原始HTML结构 -->
+          <!-- 设置按钮将动态添加至此 -->
         </div>
       </div>
     </div>
@@ -456,7 +460,7 @@
     }
   };
 
-  // ---------- 原有功能函数 (保持原样) ----------
+  // 祝福语相关函数 (完整保留)
   const appearance = ['笑容','眼睛','睫毛','眉眼','脸庞','气质','秀发','穿搭','肌肤','神采'];
   const clothing = ['裙子','衬衫','外套','配饰','风格','衣着','造型','妆容'];
   const figure = ['身材','身姿','体态','曲线','轮廓','气质'];
@@ -951,11 +955,12 @@
   switchTab('page-today');
 })();
 
-// ========== 设置模块（仅创建弹窗，按钮固定在日历页面底部） ==========
+// ========== 设置模块（包含字体、壁纸、透明度滑块） ==========
 (function() {
   const SETTINGS_PREFIX = 'AppSettings_';
   const FONT_KEY = SETTINGS_PREFIX + 'fontSize';
   const WALLPAPER_KEY = SETTINGS_PREFIX + 'wallpaper';
+  const OPACITY_KEY = SETTINGS_PREFIX + 'cardOpacity';  // 存储透明度 0~1
 
   const showToast = (msg) => {
     let container = document.getElementById('toastContainer');
@@ -971,6 +976,7 @@
     setTimeout(() => el.remove(), 2000);
   };
 
+  // 字体大小
   function setFontSize(level) {
     let baseSize = '16px';
     if (level === 'small') baseSize = '14px';
@@ -991,6 +997,7 @@
     }
   }
 
+  // 壁纸
   function setWallpaper(dataUrl) {
     if (dataUrl) {
       document.body.style.backgroundImage = `url(${dataUrl})`;
@@ -1017,6 +1024,29 @@
     showToast('已恢复默认背景');
   }
 
+  // 卡片透明度 (0.5 ~ 0.95)
+  function setCardOpacity(value) {
+    let alpha = Math.min(0.95, Math.max(0.5, parseFloat(value)));
+    if (isNaN(alpha)) alpha = 0.75;
+    const bgRgba = `rgba(255, 255, 255, ${alpha})`;
+    document.documentElement.style.setProperty('--card-bg', bgRgba);
+    localStorage.setItem(OPACITY_KEY, alpha);
+    // 同步滑块显示
+    const slider = document.getElementById('opacitySlider');
+    if (slider) slider.value = alpha;
+    const opacityVal = document.getElementById('opacityValue');
+    if (opacityVal) opacityVal.innerText = Math.round(alpha * 100) + '%';
+  }
+  function loadCardOpacity() {
+    const saved = localStorage.getItem(OPACITY_KEY);
+    let alpha = 0.75;  // 默认0.75
+    if (saved !== null && !isNaN(parseFloat(saved))) {
+      alpha = Math.min(0.95, Math.max(0.5, parseFloat(saved)));
+    }
+    setCardOpacity(alpha);
+  }
+
+  // 导入导出（同前）
   function exportAllData() {
     const allData = {};
     for (let i = 0; i < localStorage.length; i++) {
@@ -1052,7 +1082,7 @@
     reader.readAsText(file);
   }
 
-  // 创建弹窗（不创建右下角按钮）
+  // 创建弹窗（包含透明度滑块）
   function createSettingsModal() {
     const modal = document.createElement('div');
     modal.id = 'settingsModal';
@@ -1080,6 +1110,15 @@
         </select>
       </div>
       <div style="margin-bottom: 20px;">
+        <label style="display:block; font-size:13px; font-weight:600; margin-bottom:6px;">🔘 卡片透明度</label>
+        <input type="range" id="opacitySlider" min="0.5" max="0.95" step="0.01" value="0.75" style="width:100%;">
+        <div style="display:flex; justify-content:space-between; margin-top:4px;">
+          <span style="font-size:11px;">更透</span>
+          <span id="opacityValue" style="font-size:12px; font-weight:500;">75%</span>
+          <span style="font-size:11px;">更实</span>
+        </div>
+      </div>
+      <div style="margin-bottom: 20px;">
         <label style="display:block; font-size:13px; font-weight:600; margin-bottom:6px;">🖼️ 自定义壁纸</label>
         <input type="file" id="wallpaperUpload" accept="image/*" style="margin-bottom:8px; font-size:12px;">
         <button id="resetWallpaperBtn" class="btn-small btn-outline" style="width:100%;">重置为渐变背景</button>
@@ -1100,6 +1139,13 @@
 
     // 绑定事件
     document.getElementById('fontSizeSelect').onchange = (e) => setFontSize(e.target.value);
+    const slider = document.getElementById('opacitySlider');
+    const opacityVal = document.getElementById('opacityValue');
+    slider.oninput = (e) => {
+      const val = parseFloat(e.target.value);
+      opacityVal.innerText = Math.round(val * 100) + '%';
+      setCardOpacity(val);
+    };
     document.getElementById('wallpaperUpload').onchange = (e) => {
       const file = e.target.files[0];
       if (file) {
@@ -1120,11 +1166,10 @@
     return modal;
   }
 
-  // 在日历页面底部操作栏添加设置按钮
+  // 在日历页面底部添加设置按钮
   function addSettingsButtonToCalendar() {
     const bottomActions = document.getElementById('calendarBottomActions');
     if (!bottomActions) return;
-    // 避免重复添加
     if (bottomActions.querySelector('.settings-calendar-btn')) return;
     const settingsBtn = document.createElement('button');
     settingsBtn.className = 'btn btn-small btn-outline settings-calendar-btn';
@@ -1136,19 +1181,21 @@
     bottomActions.appendChild(settingsBtn);
   }
 
-  // 初始化：创建弹窗，添加按钮，加载设置
+  // 初始化
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       createSettingsModal();
       addSettingsButtonToCalendar();
       loadFontSize();
       loadWallpaper();
+      loadCardOpacity();
     });
   } else {
     createSettingsModal();
     addSettingsButtonToCalendar();
     loadFontSize();
     loadWallpaper();
+    loadCardOpacity();
   }
 })();
 </script>
